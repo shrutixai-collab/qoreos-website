@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QoreOS — Your Business, Upgraded at Its Core.</title>
+<meta name="description" content="QoreOS builds and installs AI employees into Indian businesses. Save 30+ hours/week. India's first Claude-native AIOS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & TOKENS ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:      #0D1117;
+  --bg2:     #111827;
+  --bg3:     #161B27;
+  --bg4:     #1C2333;
+  --accent:  #6366F1;
+  --ag:      rgba(99,102,241,0.15);
+  --am:      rgba(99,102,241,0.08);
+  --border:  rgba(99,102,241,0.15);
+  --b2:      rgba(99,102,241,0.25);
+  --t1:      #F8FAFC;
+  --t2:      #94A3B8;
+  --t3:      #475569;
+  --green:   #34D399;
+  --yellow:  #FBBF24;
+  --red:     #F87171;
+  --fh:      'Cormorant Garamond',Georgia,serif;
+  --fb:      'Space Grotesk',system-ui,sans-serif;
+  --r:       12px;
+  --r2:      20px;
+  --r3:      9999px;
+  --ease:    0.3s ease;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--fb);font-size:16px;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:var(--r3)}
+h1,h2,h3,h4{font-family:var(--fh);font-weight:400;line-height:1.12;letter-spacing:-0.02em}
+h1{font-size:clamp(2.8rem,6.5vw,6.2rem)}
+h2{font-size:clamp(2rem,4.5vw,3.8rem)}
+p{color:var(--t2)}
+a{color:inherit;text-decoration:none}
+em{font-style:italic;color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem}
+section{padding:120px 0}
+
+/* ── LABEL ── */
+.lbl{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem}
+.lbl::before{content:'';display:block;width:18px;height:1px;background:var(--accent)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;padding:.875rem 2rem;border-radius:var(--r3);font-family:var(--fb);font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:all var(--ease);white-space:nowrap}
+.btn-p{background:var(--accent);color:#fff}
+.btn-p:hover{background:#818CF8;transform:translateY(-2px);box-shadow:0 0 28px rgba(99,102,241,.45)}
+.btn-s{background:transparent;color:var(--t1);border:1px solid var(--border)}
+.btn-s:hover{border-color:var(--b2);background:var(--bg3)}
+.btn-ghost{background:transparent;color:var(--accent);padding-left:0;padding-right:0;gap:.45rem}
+.btn-ghost:hover{gap:.75rem}
+
+/* ── SCROLL REVEAL ── */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.rv.on{opacity:1;transform:none}
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s}
+
+/* ══════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 0;transition:all .35s ease}
+nav.blur{background:rgba(13,17,23,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:.9rem 0}
+.nav-in{display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--fh);font-size:1.65rem;font-weight:600;letter-spacing:-.02em}
+.logo span{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:2.5rem;list-style:none}
+.nav-links a{font-size:.875rem;font-weight:500;color:var(--t2);position:relative;transition:color var(--ease)}
+.nav-links a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--accent);transition:width var(--ease)}
+.nav-links a:hover{color:var(--t1)}
+.nav-links a:hover::after{width:100%}
+.nav-btn{animation:navPulse 2.5s ease 1.5s 3}
+@keyframes navPulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.5)}50%{box-shadow:0 0 0 8px rgba(99,102,241,0)}}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hbg span{display:block;width:22px;height:2px;background:var(--t1);border-radius:var(--r3);transition:all .3s}
+.hbg.on span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hbg.on span:nth-child(2){opacity:0}
+.hbg.on span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mob{display:none;position:fixed;inset:0;background:var(--bg);z-index:99;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem}
+.mob.on{display:flex}
+.mob a{font-family:var(--fh);font-size:2.5rem;font-weight:400;transition:color var(--ease)}
+.mob a:hover{color:var(--accent)}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:100px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
+.hero-glow-1{width:600px;height:600px;background:rgba(99,102,241,.06);top:-200px;left:-200px;animation:drift1 20s ease-in-out infinite alternate}
+.hero-glow-2{width:500px;height:500px;background:rgba(99,102,241,.04);bottom:-200px;right:-200px;animation:drift2 25s ease-in-out infinite alternate}
+@keyframes drift1{0%{transform:translate(0,0)}100%{transform:translate(40px,30px)}}
+@keyframes drift2{0%{transform:translate(0,0)}100%{transform:translate(-30px,-40px)}}
+.hero-inner{position:relative;z-index:10;text-align:center;max-width:860px;margin:0 auto}
+
+/* Hero text animations */
+.hero-inner>*{opacity:0;animation:slideUp .75s ease forwards}
+.ha1{animation-delay:.2s}
+.ha2{animation-delay:.4s}
+.ha3{animation-delay:.6s}
+.ha4{animation-delay:.8s}
+.ha5{animation-delay:1s}
+.ha6{animation-delay:1.2s}
+.ha7{animation-delay:1.4s;transform:translateY(12px)}
+.ha8{animation-delay:1.55s;transform:translateY(12px)}
+.ha9{animation-delay:1.7s;transform:translateY(12px)}
+@keyframes slideUp{to{opacity:1;transform:none}}
+
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.38rem 1rem;background:var(--am);border:1px solid var(--border);border-radius:var(--r3);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:2.5rem}
+.hero-badge::before{content:'●';font-size:.45rem;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero h1{margin-bottom:1.5rem}
+.hero-sub{font-size:clamp(1rem,2vw,1.18rem);color:var(--t2);max-width:560px;margin:0 auto 3rem;line-height:1.8}
+.hero-ctas{display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap;margin-bottom:3.5rem}
+.hero-pills{display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:.5rem;padding:.45rem 1.1rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r3);font-size:.78rem;font-weight:500;color:var(--t2)}
+.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0}
+
+/* ══════════════════════════════════════
+   MANIFESTO
+══════════════════════════════════════ */
+.manifesto{background:var(--bg2);position:relative;overflow:hidden}
+.mani-wrap{max-width:740px;margin:0 auto;position:relative;padding-left:2.5rem}
+.mani-line{position:absolute;left:0;top:0;width:2px;height:0;background:linear-gradient(to bottom,var(--accent),rgba(99,102,241,0));border-radius:2px;transition:height 1.5s ease .3s}
+.manifesto.on .mani-line{height:100%}
+.mani-wrap h2{font-size:clamp(2.2rem,5vw,4rem);font-weight:400;margin-bottom:2.5rem}
+.mani-body p{font-size:clamp(1rem,1.5vw,1.1rem);line-height:1.9;color:var(--t2);margin-bottom:1.4rem}
+.mani-body strong{color:var(--t1);font-weight:500}
+
+/* ══════════════════════════════════════
+   WHAT IS QOREOS
+══════════════════════════════════════ */
+.what-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-bottom:4rem}
+.what-body{font-size:1.05rem;line-height:1.85;color:var(--t2)}
+.cards4{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.card4{padding:1.75rem;background:#1E2333;border:1px solid rgba(99,102,241,0.2);border-radius:var(--r2);transition:all var(--ease)}
+.card4:hover{border-color:var(--b2);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.card4-ico{width:34px;height:34px;border-radius:8px;background:rgba(99,102,241,.15);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:.95rem}
+.card4 h4{font-family:var(--fb);font-size:.95rem;font-weight:600;color:#F8FAFC;margin-bottom:.4rem}
+.card4 p{font-size:.875rem;line-height:1.65;color:#CBD5E1}
+
+/* ══════════════════════════════════════
+   EMPLOYEE STACK
+══════════════════════════════════════ */
+.stack{background:var(--bg2)}
+.stack-hd{text-align:center;margin-bottom:4rem}
+.stack-hd p{max-width:560px;margin:1rem auto 0;font-size:1.05rem}
+.emp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-bottom:3rem}
+.emp{background:#1E2333;border:1px solid rgba(99,102,241,0.2);border-radius:var(--r2);padding:2rem;transition:border-color .3s ease,transform .3s ease,box-shadow .3s ease;position:relative;overflow:hidden}
+.emp::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity var(--ease)}
+.emp:hover{border-color:var(--b2);transform:translateY(-6px);box-shadow:0 20px 40px rgba(99,102,241,.15)}
+.emp:hover::after{opacity:1}
+.emp.india{border-color:rgba(99,102,241,.4)}
+.emp-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem}
+.emp-name{font-family:var(--fh);font-size:1.85rem;font-weight:600;color:var(--accent)}
+.emp-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.22rem .7rem;background:var(--am);border:1px solid var(--border);border-radius:var(--r3);font-size:.68rem;font-weight:700;letter-spacing:.05em;color:var(--accent)}
+.emp-tag{font-size:1rem;font-weight:600;color:var(--t1);margin-bottom:.65rem}
+.emp-desc{font-size:.875rem;line-height:1.7;color:var(--t2);margin-bottom:1.4rem}
+.caps{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.6rem}
+.cap{padding:.28rem .7rem;background:var(--bg4);border:1px solid rgba(99,102,241,.12);border-radius:var(--r3);font-size:.72rem;font-weight:500;color:var(--t2)}
+
+/* ── Mini UI ── */
+.mui{background:var(--bg4);border:1px solid rgba(99,102,241,.12);border-radius:var(--r);overflow:hidden}
+.mui-bar{padding:.55rem .875rem;border-bottom:1px solid rgba(99,102,241,.1);display:flex;align-items:center;gap:.4rem}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot.r{background:var(--red)} .dot.y{background:var(--yellow)} .dot.g{background:var(--green)}
+.mui-ttl{font-size:.65rem;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-left:.4rem}
+.mui-rows{padding:.7rem .875rem}
+.mrow{display:flex;align-items:center;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:.73rem;opacity:0;transform:translateX(-8px);transition:opacity .4s ease,transform .4s ease}
+.mrow:last-child{border-bottom:none}
+.mrow.show{opacity:1;transform:none}
+.mrow-l{color:var(--t2);font-weight:500}
+.mrow-v{font-weight:700;font-size:.7rem}
+.ok{color:var(--green)} .warn{color:var(--yellow)} .info{color:var(--accent)}
+.mui-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;padding:.7rem .875rem}
+.mcell{background:var(--bg);border:1px solid rgba(99,102,241,.1);border-radius:8px;padding:.55rem .7rem}
+.mcell .lbl{font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem}
+.mcell .val{font-size:1.05rem;font-weight:700;color:var(--t1)}
+.mcell .chg{font-size:.6rem;margin-top:.1rem}
+.cup{color:var(--green)} .cmut{color:var(--t3)}
+.stack-ft{text-align:center}
+.stack-ft p{font-family:var(--fh);font-size:1.1rem;font-style:italic;color:var(--t2);margin-bottom:2rem}
+
+/* ══════════════════════════════════════
+   Q:CA SPOTLIGHT
+══════════════════════════════════════ */
+.qca-spot{position:relative;overflow:hidden}
+.qca-spot::before{content:'';position:absolute;left:-5%;top:50%;transform:translateY(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(99,102,241,.06) 0%,transparent 70%);pointer-events:none}
+.qca-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.qca-left p{font-size:1.05rem;line-height:1.85;margin-bottom:1.4rem}
+.qca-left strong{color:var(--t1);font-weight:500}
+.qca-note{margin-top:1.75rem;padding:.875rem 1.1rem;background:var(--bg3);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:6px;font-size:.8rem;line-height:1.65;color:var(--t3)}
+.qca-box{padding:2rem;background:var(--bg3);border:1px solid var(--b2);border-radius:var(--r2);position:sticky;top:110px}
+.qca-box-ttl{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem}
+.qca-item{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.qca-item:last-child{border-bottom:none}
+.qca-chk{width:20px;height:20px;border-radius:50%;background:rgba(52,211,153,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.qca-chk svg{width:10px;height:10px}
+.qca-item span{font-size:.875rem;color:var(--t2);line-height:1.5}
+
+/* ══════════════════════════════════════
+   HOW IT WORKS
+══════════════════════════════════════ */
+.hiw{background:var(--bg2)}
+.hiw-hd{text-align:center;margin-bottom:5rem}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;position:relative}
+/* animated connector */
+.steps::before{content:'';position:absolute;top:28px;left:calc(16.67% + 1.5rem);width:0;height:1px;background:linear-gradient(90deg,var(--accent),rgba(99,102,241,.3));transition:width 1.4s ease .6s;z-index:1}
+.hiw.on .steps::before{width:calc(66.67% - 3rem)}
+.step{padding:2rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);transition:all var(--ease)}
+.step:hover{border-color:var(--b2);transform:translateY(-4px)}
+.step-n{font-family:var(--fh);font-size:3.8rem;font-weight:300;color:rgba(99,102,241,.25);line-height:1;margin-bottom:1.2rem}
+.step-ttl{font-family:var(--fb);font-size:1.05rem;font-weight:700;color:var(--t1);margin-bottom:.3rem}
+.step-dur{font-size:.72rem;font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.875rem}
+.step p{font-size:.9rem;line-height:1.7}
+/* step bounce in */
+.step.rv.on{animation:bounceIn .6s ease forwards}
+.step.rv{opacity:0;transform:scale(.85)}
+@keyframes bounceIn{0%{opacity:0;transform:scale(.85)}65%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+
+/* ══════════════════════════════════════
+   PRICING
+══════════════════════════════════════ */
+.pricing-hd{text-align:center;margin-bottom:4rem}
+.pricing-hd p{max-width:480px;margin:1rem auto 0}
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;align-items:start}
+.pcard{padding:2.5rem 2rem;background:#1E2333;border:1px solid rgba(99,102,241,0.2);border-radius:var(--r2);position:relative;transition:all var(--ease)}
+.pcard:hover{transform:translateY(-4px)}
+.pcard.hot{background:var(--bg4);border-color:var(--accent);box-shadow:0 0 48px rgba(99,102,241,.1)}
+.pcard.hot::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);border-radius:2px;box-shadow:0 0 14px rgba(99,102,241,.6)}
+.hot-tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);padding:.22rem 1rem;background:var(--accent);color:#fff;border-radius:var(--r3);font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
+.p-tier{font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:.75rem}
+.p-price{font-family:var(--fh);font-size:2.8rem;font-weight:500;color:var(--t1);line-height:1;margin-bottom:.3rem}
+.p-price sub{font-size:.9rem;font-weight:400;color:var(--t2);vertical-align:baseline}
+.p-cad{font-size:.8rem;color:var(--t3);margin-bottom:2rem}
+.p-div{height:1px;background:var(--border);margin:1.25rem 0}
+.p-feats{list-style:none;margin-bottom:2rem}
+.p-feats li{display:flex;align-items:flex-start;gap:.65rem;padding:.45rem 0;font-size:.875rem;color:var(--t2)}
+.p-feats li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+.p-note{text-align:center;margin-top:2.5rem;font-size:.875rem;color:var(--t3)}
+.p-note a{color:var(--accent)}
+
+/* ══════════════════════════════════════
+   FAQ
+══════════════════════════════════════ */
+.faq{background:var(--bg2)}
+.faq-hd{text-align:center;margin-bottom:4rem}
+.faq-list{max-width:740px;margin:0 auto}
+.fqa{padding:2rem 0;border-bottom:1px solid rgba(99,102,241,.1)}
+.fqa:first-child{border-top:1px solid rgba(99,102,241,.1)}
+.fqa-q{font-size:1.125rem;font-weight:600;color:#F8FAFC;margin-bottom:.75rem;line-height:1.4}
+.fqa-a{font-size:1rem;color:#94A3B8;line-height:1.7}
+
+/* ══════════════════════════════════════
+   FINAL CTA
+══════════════════════════════════════ */
+.fcta{text-align:center;position:relative;overflow:hidden}
+.fcta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(99,102,241,.08) 0%,transparent 65%);pointer-events:none}
+.fcta-in{max-width:680px;margin:0 auto}
+.fcta-in h2{font-weight:400;margin-bottom:1.5rem}
+.fcta-in p{font-size:1.05rem;line-height:1.8;max-width:560px;margin:0 auto 3rem}
+.fcta-acts{display:flex;flex-direction:column;align-items:center;gap:1.25rem}
+.wa-link{display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--t3);transition:color var(--ease)}
+.wa-link:hover{color:var(--green)}
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2rem}
+.ft{display:flex;align-items:flex-start;justify-content:space-between;gap:3rem;flex-wrap:wrap;margin-bottom:3rem}
+.ft-tag{font-size:.875rem;color:var(--t3);margin-top:.35rem}
+.ft-links{display:flex;gap:2rem;flex-wrap:wrap;align-items:center}
+.ft-links a{font-size:.875rem;color:var(--t2);transition:color var(--ease)}
+.ft-links a:hover{color:var(--t1)}
+.ft-bot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-top:2rem;border-top:1px solid var(--border)}
+.ft-copy,.ft-pow{font-size:.78rem;color:var(--t3)}
+.ft-pow span{color:var(--accent)}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media(max-width:900px){
+  section{padding:80px 0}
+  .nav-links,nav .btn-p{display:none}
+  .hbg{display:flex}
+  .what-grid{grid-template-columns:1fr;gap:2rem}
+  .emp-grid{grid-template-columns:1fr}
+  .qca-grid{grid-template-columns:1fr;gap:3rem}
+  .qca-box{position:static}
+  .steps{grid-template-columns:1fr}
+  .steps::before{display:none}
+  .p-grid{grid-template-columns:1fr;max-width:400px;margin:0 auto}
+  .cards4{grid-template-columns:1fr}
+  .ft{flex-direction:column;gap:2rem}
+}
+@media(max-width:600px){
+  .wrap{padding:0 1.25rem}
+  section{padding:60px 0}
+  .hero-ctas{flex-direction:column}
+  .hero-pills{flex-direction:column;align-items:center}
+  .mui-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="nav">
+  <div class="wrap nav-in">
+    <a href="#" class="logo">Qore<span>OS</span></a>
+    <ul class="nav-links">
+      <li><a href="#employees">Our AI Employees</a></li>
+      <li><a href="#hiw">How It Works</a></li>
+      <li><a href="#qca">Q:CA</a></li>
+    </ul>
+    <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p nav-btn" style="font-size:.82rem;padding:.65rem 1.5rem;">Book a Free Call</a>
+    <div class="hbg" id="hbg"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+<div class="mob" id="mob">
+  <a href="#employees" onclick="closeMob()">Our AI Employees</a>
+  <a href="#hiw"       onclick="closeMob()">How It Works</a>
+  <a href="#qca"       onclick="closeMob()">Q:CA</a>
+  <a href="#pricing"   onclick="closeMob()">Pricing</a>
+  <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p" onclick="closeMob()">Book a Free Call</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="home">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+  <div class="wrap">
+    <div class="hero-inner">
+      <div class="hero-badge ha1">India's first Claude-native AIOS</div>
+      <h1>
+        <span style="display:block" class="ha2">Your Business,</span>
+        <span style="display:block" class="ha3"><em>Upgraded</em> at Its Core.</span>
+      </h1>
+      <p class="hero-sub ha4">QoreOS builds and installs AI employees into your business — so your team stops drowning in repetitive work and starts focusing on actual growth.</p>
+      <div class="hero-ctas ha5">
+        <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p">Book a Free Strategy Call</a>
+        <a href="#employees"                  class="btn btn-s">Meet Your AI Employees</a>
+      </div>
+      <div class="hero-pills">
+        <div class="pill ha7">Saves 30+ hours/week</div>
+        <div class="pill ha8">Cuts operational costs by 40%</div>
+        <div class="pill ha9">Built for Indian businesses</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MANIFESTO ══ -->
+<section class="manifesto" id="manifesto">
+  <div class="wrap">
+    <div class="mani-wrap">
+      <div class="mani-line"></div>
+      <h2 class="rv">Every day you wait,<br>your <em>competitor doesn't.</em></h2>
+      <div class="mani-body rv d1">
+        <p>Your business is running on people doing things machines should be doing.</p>
+        <p>Manual follow-ups. Reports nobody reads until it's too late. Content that never gets made. GST reconciliation that eats your CA's entire week. Customer queries sitting unanswered at 11pm.</p>
+        <p><strong>You already know this.</strong></p>
+        <p>The question isn't whether AI will change your business. It already is — for someone else.</p>
+        <p>QoreOS installs AI employees that handle enterprise-level processes — so your business runs leaner, moves faster, and grows without adding headcount.</p>
+        <br>
+        <a href="#hiw" class="btn btn-ghost">See How It Works →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHAT IS QOREOS ══ -->
+<section id="about">
+  <div class="wrap">
+    <div class="what-grid">
+      <div>
+        <span class="lbl rv">What we do</span>
+        <h2 class="rv d1">An AI Operating System.<br>Built into your business.</h2>
+      </div>
+      <p class="what-body rv d2">Most businesses use AI as a tool — something they open, type into, and close. That's not what QoreOS does. We map every part of your business, identify where time and money is leaking, and build AI employees that fix those leaks permanently. Custom-built. Trained on your data. Connected to your tools. Running 24/7.</p>
+    </div>
+    <div class="cards4">
+      <div class="card4 rv">
+        <div class="card4-ico">🔍</div>
+        <h4>We audit first</h4>
+        <p>We spend the first week understanding your business before we build anything.</p>
+      </div>
+      <div class="card4 rv d1">
+        <div class="card4-ico">⚙️</div>
+        <h4>We build custom</h4>
+        <p>No templates. Every AI employee is built specifically for how your business works.</p>
+      </div>
+      <div class="card4 rv d2">
+        <div class="card4-ico">🚀</div>
+        <h4>We deploy fast</h4>
+        <p>Most clients are live within 30 days of starting.</p>
+      </div>
+      <div class="card4 rv d3">
+        <div class="card4-ico">♾️</div>
+        <h4>We stay with you</h4>
+        <p>Your AI employees are always running, always improving. We monitor, fix, update, and evolve every system we build — so you never have to figure it out alone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EMPLOYEE STACK ══ -->
+<section class="stack" id="employees">
+  <div class="wrap">
+    <div class="stack-hd rv">
+      <span class="lbl">Meet your new team</span>
+      <h2>Four AI Employees.<br>One operating system.</h2>
+      <p>Each one custom-built for your business, trained on your data, deployed in days — not months.</p>
+    </div>
+    <div class="emp-grid">
+
+      <!-- Q:Sales -->
+      <div class="emp rv" data-emp="sales">
+        <div class="emp-top"><div class="emp-name">Q:Sales</div></div>
+        <div class="emp-tag">Never lose a lead again.</div>
+        <p class="emp-desc">Qualifies every lead the moment they come in. Follows up automatically. Books calls without you lifting a finger. Manages your entire pipeline so nothing ever falls through the cracks.</p>
+        <div class="caps">
+          <span class="cap">Lead qualification</span><span class="cap">Automated follow-up</span>
+          <span class="cap">Call booking</span><span class="cap">Pipeline management</span>
+        </div>
+        <div class="mui">
+          <div class="mui-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <span class="mui-ttl">Pipeline View</span>
+          </div>
+          <div class="mui-rows">
+            <div class="mrow"><span class="mrow-l">Sharma Enterprises</span><span class="mrow-v ok">Qualified ✓</span></div>
+            <div class="mrow"><span class="mrow-l">TechVentures Pune</span><span class="mrow-v info">Follow-up sent</span></div>
+            <div class="mrow"><span class="mrow-l">Krishna Foods</span><span class="mrow-v ok">Call booked</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q:CA -->
+      <div class="emp india rv d1" data-emp="ca">
+        <div class="emp-top">
+          <div class="emp-name">Q:CA</div>
+          <span class="emp-badge">India-exclusive ⭐</span>
+        </div>
+        <div class="emp-tag">Your AI finance and compliance brain.</div>
+        <p class="emp-desc">The only AI employee built specifically for Indian businesses. Knows your books, tracks your GST, flags compliance risks before they become notices, answers your finance questions instantly — 24/7. Your CA still makes the final call. Q:CA makes sure they have everything they need to make it fast.</p>
+        <div class="caps">
+          <span class="cap">GST tracking</span><span class="cap">ITC reconciliation</span>
+          <span class="cap">Cash flow forecasting</span><span class="cap">Compliance alerts</span><span class="cap">Finance Q&amp;A</span>
+        </div>
+        <div class="mui">
+          <div class="mui-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <span class="mui-ttl">Finance Dashboard</span>
+          </div>
+          <div class="mui-rows">
+            <div class="mrow"><span class="mrow-l">GST Status</span><span class="mrow-v ok">₹<span class="cnt" data-end="214000" data-indian="1">0</span> reconciled ✓</span></div>
+            <div class="mrow"><span class="mrow-l">ITC Mismatch</span><span class="mrow-v warn">2 vendors flagged ⚠</span></div>
+            <div class="mrow"><span class="mrow-l">Cash Position</span><span class="mrow-v info">₹<span class="cnt" data-end="84" data-suffix="L">0</span> available</span></div>
+            <div class="mrow"><span class="mrow-l">Advance Tax</span><span class="mrow-v warn">Due in 14 days</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q:Compete -->
+      <div class="emp rv d2" data-emp="compete">
+        <div class="emp-top"><div class="emp-name">Q:Compete</div></div>
+        <div class="emp-tag">Know your competition before they move.</div>
+        <p class="emp-desc">Monitors your competitors 24/7 — tracking their pricing, marketing moves, product launches, and customer sentiment. You always know what they're doing before it affects you.</p>
+        <div class="caps">
+          <span class="cap">Competitor monitoring</span><span class="cap">Price tracking</span>
+          <span class="cap">Marketing intelligence</span><span class="cap">Market trend analysis</span>
+        </div>
+        <div class="mui">
+          <div class="mui-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <span class="mui-ttl">Competitor Tracker</span>
+          </div>
+          <div class="mui-rows">
+            <div class="mrow"><span class="mrow-l">Competitor A</span><span class="mrow-v warn">Price dropped 12% ⚠</span></div>
+            <div class="mrow"><span class="mrow-l">Competitor B</span><span class="mrow-v info">New product launched</span></div>
+            <div class="mrow"><span class="mrow-l">Market sentiment</span><span class="mrow-v ok">Shifting to quality</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Q:Ads -->
+      <div class="emp rv d3" data-emp="ads">
+        <div class="emp-top"><div class="emp-name">Q:Ads</div></div>
+        <div class="emp-tag">Ad spend that actually works.</div>
+        <p class="emp-desc">Creates ad copy, manages campaigns, optimises spend, and generates performance reports across Meta and Google — so every rupee you spend is working harder.</p>
+        <div class="caps">
+          <span class="cap">Ad copywriting</span><span class="cap">Campaign management</span>
+          <span class="cap">Spend optimisation</span><span class="cap">Performance analytics</span>
+        </div>
+        <div class="mui">
+          <div class="mui-bar">
+            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+            <span class="mui-ttl">Ads Dashboard</span>
+          </div>
+          <div class="mui-grid">
+            <div class="mcell"><div class="lbl">CTR</div><div class="val"><span class="cnt" data-end="42" data-dec="1" data-suffix="%">0%</span></div><div class="chg cup">↑ vs last week</div></div>
+            <div class="mcell"><div class="lbl">ROAS</div><div class="val"><span class="cnt" data-end="38" data-dec="1" data-suffix="x">0x</span></div><div class="chg cup">↑ strong</div></div>
+            <div class="mcell"><div class="lbl">CPA</div><div class="val">₹<span class="cnt" data-end="312">0</span></div><div class="chg cup">↓ optimised</div></div>
+            <div class="mcell"><div class="lbl">Campaigns</div><div class="val"><span class="cnt" data-end="3">0</span></div><div class="chg cmut">Active</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="stack-ft rv">
+      <p>"...and many more custom AI employees built just for your business."</p>
+      <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p">Book a Call to Discuss Your Custom Build</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ Q:CA SPOTLIGHT ══ -->
+<section class="qca-spot" id="qca">
+  <div class="wrap">
+    <div class="qca-grid">
+      <div class="qca-left">
+        <span class="lbl rv">India-exclusive</span>
+        <h2 class="rv d1">Every Indian business needs a CA.<br>Now they have one available 24/7.</h2>
+        <div class="rv d2">
+          <p>GST filing. ITC reconciliation. Advance tax calculations. Vendor compliance checks.</p>
+          <p>Every Indian business deals with this every single month. And every month it's the same story — waiting on your CA, scrambling before the deadline, worrying about notices you didn't see coming.</p>
+          <p><strong>Q:CA doesn't replace your CA. It works alongside them.</strong></p>
+          <p>Upload your documents. Ask your questions. Get instant clarity on your financial position — any time, any day.</p>
+          <p>Q:CA is trained on Indian tax law, GST rules, TDS, ITR, and compliance requirements specific to Indian businesses.</p>
+          <div class="qca-note">Q:CA provides financial clarity and flags risks. Final decisions should always be confirmed with your registered CA or tax advisor.</div>
+          <br>
+          <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p" style="margin-top:.5rem;">Get Q:CA for Your Business →</a>
+        </div>
+      </div>
+      <div class="qca-box rv d3">
+        <div class="qca-box-ttl">What Q:CA handles</div>
+        <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>GST reconciliation and mismatch alerts</span></div>
+        <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>ITC tracking and optimisation</span></div>
+        <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Advance tax reminders and calculations</span></div>
+        <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Vendor GST compliance checking</span></div>
+        <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Cash flow forecasting</span></div>
+        <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Instant finance Q&amp;A — 24/7</span></div>
+        <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>Monthly compliance health reports</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="hiw" id="hiw">
+  <div class="wrap">
+    <div class="hiw-hd rv">
+      <span class="lbl">The process</span>
+      <h2>From audit to running<br>in under 30 days.</h2>
+    </div>
+    <div class="steps">
+      <div class="step rv"><div class="step-n">01</div><div class="step-ttl">Audit</div><div class="step-dur">Week 1</div><p>We spend the first week inside your business. Mapping workflows, identifying bottlenecks, understanding where time and money is leaking. You get a full report of everything we find.</p></div>
+      <div class="step rv d1"><div class="step-n">02</div><div class="step-ttl">Build</div><div class="step-dur">Week 2–3</div><p>We build your custom AI employees — trained on your data, connected to your tools, tested until they work exactly as they should.</p></div>
+      <div class="step rv d2"><div class="step-n">03</div><div class="step-ttl">Deploy + Optimise</div><div class="step-dur">Week 4 onwards</div><p>We go live. We monitor. We improve. Your AI employees get smarter the longer they run.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PRICING ══ -->
+<section id="pricing">
+  <div class="wrap">
+    <div class="pricing-hd rv">
+      <span class="lbl">Pricing</span>
+      <h2>Simple, transparent pricing.<br>Built for Indian businesses.</h2>
+      <p>Start with an audit. Build what you need. Pay for results, not hours.</p>
+    </div>
+    <div class="p-grid">
+      <div class="pcard rv">
+        <div class="p-tier">Audit</div>
+        <div class="p-price">₹15,000</div>
+        <div class="p-cad">one-time</div>
+        <div class="p-div"></div>
+        <ul class="p-feats">
+          <li>Full business workflow audit</li><li>Bottleneck identification</li>
+          <li>Custom AI implementation roadmap</li><li>Priority recommendation report</li>
+          <li>60-minute strategy call</li>
+        </ul>
+        <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-s" style="width:100%;">Start with an Audit</a>
+      </div>
+      <div class="pcard hot rv d1">
+        <div class="hot-tag">Most Popular</div>
+        <div class="p-tier">Core</div>
+        <div class="p-price">₹49,999 <sub>setup</sub></div>
+        <div class="p-cad">+ ₹15,000/month</div>
+        <div class="p-div"></div>
+        <ul class="p-feats">
+          <li>Everything in Audit</li><li>2 custom AI employees</li>
+          <li>Full setup and integration</li><li>30-day monitoring</li>
+          <li>Monthly performance reports</li><li>WhatsApp support</li>
+        </ul>
+        <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p" style="width:100%;">Get Started with Core</a>
+      </div>
+      <div class="pcard rv d2">
+        <div class="p-tier">Full OS</div>
+        <div class="p-price">₹1,20,000 <sub>setup</sub></div>
+        <div class="p-cad">+ ₹35,000/month</div>
+        <div class="p-div"></div>
+        <ul class="p-feats">
+          <li>Everything in Core</li><li>All 4 AI employees including Q:CA</li>
+          <li>Custom AI employee for specific needs</li><li>Priority builds and updates</li>
+          <li>Dedicated account manager</li><li>Weekly strategy calls</li>
+        </ul>
+        <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-s" style="width:100%;">Build Your Full OS</a>
+      </div>
+    </div>
+    <p class="p-note rv">International clients — pricing available in USD. <a href="https://wa.me/91XXXXXXXXXX">Book a call for a custom quote →</a></p>
+  </div>
+</section>
+
+<!-- ══ FAQ ══ -->
+<section class="faq">
+  <div class="wrap">
+    <div class="faq-hd rv"><h2>Questions we get asked.</h2></div>
+    <div class="faq-list">
+      <div class="fqa rv">
+        <div class="fqa-q">Do I need to be technical to use QoreOS?</div>
+        <div class="fqa-a">Not at all. We handle every part of the build and setup. You just tell us how your business works and what problems you need solved.</div>
+      </div>
+      <div class="fqa rv d1">
+        <div class="fqa-q">How is QoreOS different from just using ChatGPT?</div>
+        <div class="fqa-a">Tools require you to do the work. QoreOS builds systems that do the work for you — running in the background, connected to your actual business tools, producing real outputs without you having to prompt anything.</div>
+      </div>
+      <div class="fqa rv d2">
+        <div class="fqa-q">What tools does QoreOS integrate with?</div>
+        <div class="fqa-a">Gmail, WhatsApp, Google Sheets, Notion, popular Indian CRMs, Tally, Zoho, and most tools your business already uses. We confirm integrations during the audit.</div>
+      </div>
+      <div class="fqa rv d1">
+        <div class="fqa-q">Is Q:CA a replacement for my CA?</div>
+        <div class="fqa-a">No. Q:CA is a finance and compliance assistant that works alongside your CA. It gives you instant clarity, flags risks, and prepares information — your CA still makes the final professional decisions.</div>
+      </div>
+      <div class="fqa rv d2">
+        <div class="fqa-q">How long does it take to go live?</div>
+        <div class="fqa-a">Most clients are live within 30 days of starting. Audit takes one week. Building takes two weeks. Deployment and testing takes one week.</div>
+      </div>
+      <div class="fqa rv d3">
+        <div class="fqa-q">What if I'm not happy with the results?</div>
+        <div class="fqa-a">We don't disappear after deployment. We monitor, fix, and improve every system we build. If something isn't working, we fix it.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="fcta">
+  <div class="wrap">
+    <div class="fcta-in">
+      <h2 class="rv">Your competitors are already<br><em>thinking about this.</em></h2>
+      <p class="rv d1">The businesses that install AI into their core operations in 2026 will be the ones that are impossible to compete with by 2028. Book a free 30-minute strategy call. We'll map out exactly what QoreOS can do for your specific business — no fluff, no pressure, no generic pitch.</p>
+      <div class="fcta-acts rv d2">
+        <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p" style="font-size:1rem;padding:1.1rem 2.75rem;">Book Your Free Strategy Call</a>
+        <a href="https://wa.me/91XXXXXXXXXX" class="wa-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          Or message us on WhatsApp →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="wrap">
+    <div class="ft">
+      <div>
+        <a href="#" class="logo" style="display:block;margin-bottom:.4rem;">Qore<span>OS</span></a>
+        <p class="ft-tag">Your Business, Upgraded at Its Core.</p>
+      </div>
+      <div class="ft-links">
+        <a href="#employees">Our AI Employees</a>
+        <a href="#qca">Q:CA</a>
+        <a href="#hiw">How It Works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://wa.me/91XXXXXXXXXX">Book a Call</a>
+      </div>
+    </div>
+    <div class="ft-bot">
+      <p class="ft-copy">© 2026 QoreOS. Built in India.</p>
+      <p class="ft-pow">Powered by <span>Claude AI</span></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ══ NAVBAR ══ */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{nav.classList.toggle('blur',scrollY>50)},{passive:true});
+
+/* ══ HAMBURGER ══ */
+const hbg=document.getElementById('hbg'),mob=document.getElementById('mob');
+hbg.addEventListener('click',()=>{
+  hbg.classList.toggle('on');mob.classList.toggle('on');
+  document.body.style.overflow=mob.classList.contains('on')?'hidden':'';
+});
+function closeMob(){hbg.classList.remove('on');mob.classList.remove('on');document.body.style.overflow='';}
+
+/* ══ SMOOTH SCROLL ══ */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(!t)return;e.preventDefault();
+    window.scrollTo({top:t.getBoundingClientRect().top+scrollY-80,behavior:'smooth'});
+  });
+});
+
+
+/* ══ COUNT-UP UTILITY ══ */
+function toIndian(n){
+  const s=Math.floor(n).toString();
+  if(s.length<=3)return s;
+  return s.slice(0,-3).replace(/\B(?=(\d{2})+(?!\d))/g,',')+','+s.slice(-3);
+}
+function easeOut(t){return 1-Math.pow(1-t,3);}
+function runCountUp(el){
+  const end=+el.dataset.end,dec=+el.dataset.dec||0,
+        suf=el.dataset.suffix||'',ind=!!el.dataset.indian,
+        dur=1400,start=Date.now();
+  el.dataset.done='1';
+  (function tick(){
+    const p=Math.min((Date.now()-start)/dur,1),v=end*easeOut(p);
+    if(dec){
+      el.textContent=(v/Math.pow(10,dec)).toFixed(dec)+suf;
+    } else if(ind){
+      el.textContent=toIndian(v)+suf;
+    } else {
+      el.textContent=Math.floor(v)+suf;
+    }
+    if(p<1)requestAnimationFrame(tick);
+  })();
+}
+
+/* ══ INTERSECTION OBSERVER ══ */
+// Track which emp cards have run their mini-UI animations
+const empDone=new Set();
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;
+
+    // Scroll reveal
+    if(el.classList.contains('rv')) el.classList.add('on');
+
+    // Manifesto line
+    if(el.classList.contains('manifesto')) el.classList.add('on');
+
+    // HOW IT WORKS connector + bounce
+    if(el.classList.contains('hiw')) el.classList.add('on');
+
+    // Employee card micro-animations
+    if(el.classList.contains('emp')){
+      const id=el.dataset.emp;
+      if(!empDone.has(id)){
+        empDone.add(id);
+        // Stagger pipeline rows
+        el.querySelectorAll('.mrow').forEach((r,i)=>{
+          setTimeout(()=>r.classList.add('show'),120+i*120);
+        });
+        // Count-up numbers
+        setTimeout(()=>{
+          el.querySelectorAll('.cnt:not([data-done])').forEach(c=>runCountUp(c));
+        },300);
+      }
+    }
+
+    obs.unobserve(el);
+  });
+},{threshold:0.12,rootMargin:'0px 0px -30px 0px'});
+
+document.querySelectorAll('.rv,.manifesto,.hiw,.emp').forEach(el=>obs.observe(el));
+
+
+</script>
+</body>
+</html>
