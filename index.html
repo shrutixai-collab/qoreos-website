@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 /* ── RESET & TOKENS ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -62,9 +63,15 @@ section{padding:120px 0}
 .btn-ghost:hover{gap:.75rem}
 
 /* ── SCROLL REVEAL ── */
-.rv{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.rv{opacity:0;transform:translateY(40px);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1)}
 .rv.on{opacity:1;transform:none}
-.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s}
+.rv-left{opacity:0;transform:translateX(-40px);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.rv-left.on{opacity:1;transform:none}
+.rv-right{opacity:0;transform:translateX(40px);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.rv-right.on{opacity:1;transform:none}
+.rv-scale{opacity:0;transform:scale(0.92);transition:opacity 0.8s cubic-bezier(0.16,1,0.3,1),transform 0.8s cubic-bezier(0.16,1,0.3,1)}
+.rv-scale.on{opacity:1;transform:none}
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s} .d5{transition-delay:.5s} .d6{transition-delay:.6s}
 
 /* ══════════════════════════════════════
    NAVBAR
@@ -95,12 +102,18 @@ nav.blur{background:rgba(13,17,23,.92);backdrop-filter:blur(20px);-webkit-backdr
    HERO
 ══════════════════════════════════════ */
 .hero{min-height:100vh;display:flex;align-items:center;padding-top:100px;position:relative;overflow:hidden}
-.hero-glow{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0}
-.hero-glow-1{width:600px;height:600px;background:rgba(99,102,241,.06);top:-200px;left:-200px;animation:drift1 20s ease-in-out infinite alternate}
-.hero-glow-2{width:500px;height:500px;background:rgba(99,102,241,.04);bottom:-200px;right:-200px;animation:drift2 25s ease-in-out infinite alternate}
-@keyframes drift1{0%{transform:translate(0,0)}100%{transform:translate(40px,30px)}}
-@keyframes drift2{0%{transform:translate(0,0)}100%{transform:translate(-30px,-40px)}}
+#globe-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;width:100%;height:100%}
 .hero-inner{position:relative;z-index:10;text-align:center;max-width:860px;margin:0 auto}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;z-index:9999;background:#0D1117;display:flex;align-items:center;justify-content:center;transition:opacity 0.6s ease,visibility 0.6s ease}
+#loader.done{opacity:0;visibility:hidden}
+.loader-logo{font-family:'Cormorant Garamond',Georgia,serif;font-size:2.5rem;font-weight:600;color:#F8FAFC;animation:loaderPulse 1.5s ease-in-out infinite}
+.loader-logo span{color:#6366F1}
+@keyframes loaderPulse{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ── SECTION DIVIDER ── */
+.section-glow{height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.3),transparent);border:none;margin:0}
 
 /* Hero text animations */
 .hero-inner>*{opacity:0;animation:slideUp .75s ease forwards}
@@ -154,38 +167,48 @@ nav.blur{background:rgba(13,17,23,.92);backdrop-filter:blur(20px);-webkit-backdr
 .stack{background:var(--bg2)}
 .stack-hd{text-align:center;margin-bottom:4rem}
 .stack-hd p{max-width:560px;margin:1rem auto 0;font-size:1.05rem}
-.emp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-bottom:3rem}
-.emp{background:#1E2333;border:1px solid rgba(99,102,241,0.2);border-radius:var(--r2);padding:2rem;transition:border-color .3s ease,transform .3s ease,box-shadow .3s ease;position:relative;overflow:hidden}
-.emp::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0;transition:opacity var(--ease)}
-.emp:hover{border-color:var(--b2);transform:translateY(-6px);box-shadow:0 20px 40px rgba(99,102,241,.15)}
-.emp:hover::after{opacity:1}
-.emp.india{border-color:rgba(99,102,241,.4)}
-.emp-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem}
-.emp-name{font-family:var(--fh);font-size:1.85rem;font-weight:600;color:var(--accent)}
+
+.emp-grid{display:flex;flex-direction:column;gap:2rem;margin-bottom:3rem}
+
+.emp{background:var(--bg3);border:1px solid rgba(99,102,241,0.12);border-radius:20px;padding:3.5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;transition:border-color 0.4s ease,box-shadow 0.4s ease;position:relative;overflow:hidden}
+.emp:hover{border-color:rgba(99,102,241,0.3);box-shadow:0 16px 48px rgba(0,0,0,0.25)}
+.emp::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,0.3),transparent);opacity:0;transition:opacity 0.4s ease}
+.emp:hover::before{opacity:1}
+.emp:nth-child(even){direction:rtl}
+.emp:nth-child(even)>*{direction:ltr}
+.emp.india{border-color:rgba(99,102,241,0.25)}
+
+.emp-content{display:flex;flex-direction:column;gap:0}
+.emp-number{font-family:var(--fh);font-size:4rem;font-weight:300;color:rgba(99,102,241,0.15);line-height:1;margin-bottom:.5rem}
+.emp-top{display:flex;align-items:center;gap:1rem;margin-bottom:.75rem}
+.emp-name{font-family:var(--fh);font-size:2rem;font-weight:600;color:var(--accent)}
 .emp-badge{display:inline-flex;align-items:center;gap:.25rem;padding:.22rem .7rem;background:var(--am);border:1px solid var(--border);border-radius:var(--r3);font-size:.68rem;font-weight:700;letter-spacing:.05em;color:var(--accent)}
-.emp-tag{font-size:1rem;font-weight:600;color:var(--t1);margin-bottom:.65rem}
-.emp-desc{font-size:.875rem;line-height:1.7;color:var(--t2);margin-bottom:1.4rem}
-.caps{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.6rem}
-.cap{padding:.28rem .7rem;background:var(--bg4);border:1px solid rgba(99,102,241,.12);border-radius:var(--r3);font-size:.72rem;font-weight:500;color:var(--t2)}
+.emp-tag{font-size:1.1rem;font-weight:600;color:var(--t1);margin-bottom:.6rem}
+.emp-desc{font-size:.9rem;line-height:1.75;color:var(--t2);margin-bottom:1.25rem}
+.caps{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1rem}
+.cap{padding:.3rem .75rem;background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,.15);border-radius:var(--r3);font-size:.72rem;font-weight:500;color:var(--accent)}
+.emp-visual{position:relative}
 
 /* ── Mini UI ── */
-.mui{background:var(--bg4);border:1px solid rgba(99,102,241,.12);border-radius:var(--r);overflow:hidden}
-.mui-bar{padding:.55rem .875rem;border-bottom:1px solid rgba(99,102,241,.1);display:flex;align-items:center;gap:.4rem}
-.dot{width:7px;height:7px;border-radius:50%}
+.mui{background:var(--bg4);border:1px solid rgba(99,102,241,.12);border-radius:14px;overflow:hidden;transition:transform 0.4s ease,box-shadow 0.4s ease}
+.emp:hover .mui{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.35)}
+.mui-bar{padding:.7rem 1rem;border-bottom:1px solid rgba(99,102,241,.08);display:flex;align-items:center;gap:.4rem;background:rgba(0,0,0,.15)}
+.dot{width:8px;height:8px;border-radius:50%}
 .dot.r{background:var(--red)} .dot.y{background:var(--yellow)} .dot.g{background:var(--green)}
-.mui-ttl{font-size:.65rem;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-left:.4rem}
-.mui-rows{padding:.7rem .875rem}
-.mrow{display:flex;align-items:center;justify-content:space-between;padding:.42rem 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:.73rem;opacity:0;transform:translateX(-8px);transition:opacity .4s ease,transform .4s ease}
+.mui-ttl{font-size:.68rem;font-weight:600;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;margin-left:.5rem}
+.mui-rows{padding:.5rem 0}
+.mrow{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.03);font-size:.8rem;opacity:0;transform:translateX(-8px);transition:opacity .4s ease,transform .4s ease}
 .mrow:last-child{border-bottom:none}
 .mrow.show{opacity:1;transform:none}
-.mrow-l{color:var(--t2);font-weight:500}
-.mrow-v{font-weight:700;font-size:.7rem}
+.mrow-l{color:var(--t2);font-weight:500;display:flex;align-items:center;gap:8px}
+.mrow-v{font-weight:700;font-size:.75rem}
 .ok{color:var(--green)} .warn{color:var(--yellow)} .info{color:var(--accent)}
-.mui-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;padding:.7rem .875rem}
-.mcell{background:var(--bg);border:1px solid rgba(99,102,241,.1);border-radius:8px;padding:.55rem .7rem}
-.mcell .lbl{font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem}
-.mcell .val{font-size:1.05rem;font-weight:700;color:var(--t1)}
-.mcell .chg{font-size:.6rem;margin-top:.1rem}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mui-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;padding:.75rem}
+.mcell{background:var(--bg);border:1px solid rgba(99,102,241,.08);border-radius:10px;padding:.7rem .85rem}
+.mcell .lbl{font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem;display:block}
+.mcell .val{font-size:1.15rem;font-weight:700;color:var(--t1)}
+.mcell .chg{font-size:.6rem;margin-top:.15rem}
 .cup{color:var(--green)} .cmut{color:var(--t3)}
 .stack-ft{text-align:center}
 .stack-ft p{font-family:var(--fh);font-size:1.1rem;font-style:italic;color:var(--t2);margin-bottom:2rem}
@@ -293,7 +316,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
   .nav-links,nav .btn-p{display:none}
   .hbg{display:flex}
   .what-grid{grid-template-columns:1fr;gap:2rem}
-  .emp-grid{grid-template-columns:1fr}
+  .emp{grid-template-columns:1fr;padding:2rem;gap:2rem}
+  .emp:nth-child(even){direction:ltr}
+  .emp-number{font-size:3rem}
   .qca-grid{grid-template-columns:1fr;gap:3rem}
   .qca-box{position:static}
   .steps{grid-template-columns:1fr}
@@ -312,6 +337,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
 </style>
 </head>
 <body>
+
+<!-- ══ LOADER ══ -->
+<div id="loader"><div class="loader-logo">Qore<span>OS</span></div></div>
 
 <!-- ══ NAVBAR ══ -->
 <nav id="nav">
@@ -336,8 +364,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
 
 <!-- ══ HERO ══ -->
 <section class="hero" id="home">
-  <div class="hero-glow hero-glow-1"></div>
-  <div class="hero-glow hero-glow-2"></div>
+  <canvas id="globe-canvas"></canvas>
   <div class="wrap">
     <div class="hero-inner">
       <div class="hero-badge ha1">India's first Claude-native AIOS</div>
@@ -358,6 +385,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
     </div>
   </div>
 </section>
+<hr class="section-glow">
 
 <!-- ══ MANIFESTO ══ -->
 <section class="manifesto" id="manifesto">
@@ -377,35 +405,36 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
     </div>
   </div>
 </section>
+<hr class="section-glow">
 
 <!-- ══ WHAT IS QOREOS ══ -->
 <section id="about">
   <div class="wrap">
     <div class="what-grid">
-      <div>
-        <span class="lbl rv">What we do</span>
-        <h2 class="rv d1">An AI Operating System.<br>Built into your business.</h2>
+      <div class="rv-left">
+        <span class="lbl">What we do</span>
+        <h2 class="d1">An AI Operating System.<br>Built into your business.</h2>
       </div>
-      <p class="what-body rv d2">Most businesses use AI as a tool — something they open, type into, and close. That's not what QoreOS does. We map every part of your business, identify where time and money is leaking, and build AI employees that fix those leaks permanently. Custom-built. Trained on your data. Connected to your tools. Running 24/7.</p>
+      <p class="what-body rv-right d2">Most businesses use AI as a tool — something they open, type into, and close. That's not what QoreOS does. We map every part of your business, identify where time and money is leaking, and build AI employees that fix those leaks permanently. Custom-built. Trained on your data. Connected to your tools. Running 24/7.</p>
     </div>
     <div class="cards4">
       <div class="card4 rv">
-        <div class="card4-ico">🔍</div>
+        <div class="card4-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
         <h4>We audit first</h4>
         <p>We spend the first week understanding your business before we build anything.</p>
       </div>
       <div class="card4 rv d1">
-        <div class="card4-ico">⚙️</div>
+        <div class="card4-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
         <h4>We build custom</h4>
         <p>No templates. Every AI employee is built specifically for how your business works.</p>
       </div>
       <div class="card4 rv d2">
-        <div class="card4-ico">🚀</div>
+        <div class="card4-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
         <h4>We deploy fast</h4>
         <p>Most clients are live within 30 days of starting.</p>
       </div>
       <div class="card4 rv d3">
-        <div class="card4-ico">♾️</div>
+        <div class="card4-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.178 8c5.096 0 5.096 8 0 8-5.095 0-7.133-8-12.739-8-4.585 0-4.585 8 0 8 5.606 0 7.644-8 12.74-8z"/></svg></div>
         <h4>We stay with you</h4>
         <p>Your AI employees are always running, always improving. We monitor, fix, update, and evolve every system we build — so you never have to figure it out alone.</p>
       </div>
@@ -424,94 +453,121 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
     <div class="emp-grid">
 
       <!-- Q:Sales -->
-      <div class="emp rv" data-emp="sales">
-        <div class="emp-top"><div class="emp-name">Q:Sales</div></div>
-        <div class="emp-tag">Never lose a lead again.</div>
-        <p class="emp-desc">Qualifies every lead the moment they come in. Follows up automatically. Books calls without you lifting a finger. Manages your entire pipeline so nothing ever falls through the cracks.</p>
-        <div class="caps">
-          <span class="cap">Lead qualification</span><span class="cap">Automated follow-up</span>
-          <span class="cap">Call booking</span><span class="cap">Pipeline management</span>
-        </div>
-        <div class="mui">
-          <div class="mui-bar">
-            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-            <span class="mui-ttl">Pipeline View</span>
+      <div class="emp rv rv-scale" data-emp="sales">
+        <div class="emp-content">
+          <div class="emp-number">01</div>
+          <div class="emp-top"><div class="emp-name">Q:Sales</div></div>
+          <div class="emp-tag">Never lose a lead again.</div>
+          <p class="emp-desc">Qualifies every lead the moment they come in. Follows up automatically. Books calls without you lifting a finger. Manages your entire pipeline so nothing ever falls through the cracks.</p>
+          <div class="caps">
+            <span class="cap">Lead qualification</span><span class="cap">Automated follow-up</span>
+            <span class="cap">Call booking</span><span class="cap">Pipeline management</span>
           </div>
-          <div class="mui-rows">
-            <div class="mrow"><span class="mrow-l">Sharma Enterprises</span><span class="mrow-v ok">Qualified ✓</span></div>
-            <div class="mrow"><span class="mrow-l">TechVentures Pune</span><span class="mrow-v info">Follow-up sent</span></div>
-            <div class="mrow"><span class="mrow-l">Krishna Foods</span><span class="mrow-v ok">Call booked</span></div>
+          <a href="/demo/qsales" class="btn btn-ghost" style="margin-top:.5rem;">Try Q:Sales →</a>
+        </div>
+        <div class="emp-visual">
+          <div class="mui">
+            <div class="mui-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <span class="mui-ttl">Pipeline</span>
+              <span style="margin-left:auto;font-size:.7rem;font-weight:700;color:var(--accent);">12 active</span>
+            </div>
+            <div class="mui-rows">
+              <div class="mrow"><span class="mrow-l"><span class="status-dot" style="background:var(--green)"></span>Sharma Enterprises</span><span class="mrow-v ok">Qualified</span></div>
+              <div class="mrow"><span class="mrow-l"><span class="status-dot" style="background:var(--yellow)"></span>TechVentures Pune</span><span class="mrow-v info">Follow-up</span></div>
+              <div class="mrow"><span class="mrow-l"><span class="status-dot" style="background:var(--red)"></span>Krishna Foods</span><span class="mrow-v ok">Booked</span></div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Q:CA -->
-      <div class="emp india rv d1" data-emp="ca">
-        <div class="emp-top">
-          <div class="emp-name">Q:CA</div>
-          <span class="emp-badge">India-exclusive ⭐</span>
-        </div>
-        <div class="emp-tag">Your AI finance and compliance brain.</div>
-        <p class="emp-desc">The only AI employee built specifically for Indian businesses. Knows your books, tracks your GST, flags compliance risks before they become notices, answers your finance questions instantly — 24/7. Your CA still makes the final call. Q:CA makes sure they have everything they need to make it fast.</p>
-        <div class="caps">
-          <span class="cap">GST tracking</span><span class="cap">ITC reconciliation</span>
-          <span class="cap">Cash flow forecasting</span><span class="cap">Compliance alerts</span><span class="cap">Finance Q&amp;A</span>
-        </div>
-        <div class="mui">
-          <div class="mui-bar">
-            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-            <span class="mui-ttl">Finance Dashboard</span>
+      <div class="emp india rv rv-scale d1" data-emp="ca">
+        <div class="emp-content">
+          <div class="emp-number">02</div>
+          <div class="emp-top">
+            <div class="emp-name">Q:CA</div>
+            <span class="emp-badge">India-exclusive ⭐</span>
           </div>
-          <div class="mui-rows">
-            <div class="mrow"><span class="mrow-l">GST Status</span><span class="mrow-v ok">₹<span class="cnt" data-end="214000" data-indian="1">0</span> reconciled ✓</span></div>
-            <div class="mrow"><span class="mrow-l">ITC Mismatch</span><span class="mrow-v warn">2 vendors flagged ⚠</span></div>
-            <div class="mrow"><span class="mrow-l">Cash Position</span><span class="mrow-v info">₹<span class="cnt" data-end="84" data-suffix="L">0</span> available</span></div>
-            <div class="mrow"><span class="mrow-l">Advance Tax</span><span class="mrow-v warn">Due in 14 days</span></div>
+          <div class="emp-tag">Your AI finance and compliance brain.</div>
+          <p class="emp-desc">The only AI employee built specifically for Indian businesses. Knows your books, tracks your GST, flags compliance risks before they become notices, answers your finance questions instantly — 24/7.</p>
+          <div class="caps">
+            <span class="cap">GST tracking</span><span class="cap">ITC reconciliation</span>
+            <span class="cap">Cash flow forecasting</span><span class="cap">Compliance alerts</span><span class="cap">Finance Q&amp;A</span>
+          </div>
+          <a href="/demo/qca" class="btn btn-ghost" style="margin-top:.5rem;">Try Q:CA →</a>
+        </div>
+        <div class="emp-visual">
+          <div class="mui">
+            <div class="mui-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <span class="mui-ttl">Finance Dashboard</span>
+            </div>
+            <div class="mui-rows">
+              <div class="mrow"><span class="mrow-l">GST Status</span><span class="mrow-v ok">₹<span class="cnt" data-end="214000" data-indian="1">0</span> reconciled ✓</span></div>
+              <div class="mrow"><span class="mrow-l">ITC Mismatch</span><span class="mrow-v warn">2 vendors flagged ⚠</span></div>
+              <div class="mrow"><span class="mrow-l">Cash Position</span><span class="mrow-v info">₹<span class="cnt" data-end="84" data-suffix="L">0</span> available</span></div>
+              <div class="mrow"><span class="mrow-l">Advance Tax</span><span class="mrow-v warn">Due in 14 days</span></div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Q:Compete -->
-      <div class="emp rv d2" data-emp="compete">
-        <div class="emp-top"><div class="emp-name">Q:Compete</div></div>
-        <div class="emp-tag">Know your competition before they move.</div>
-        <p class="emp-desc">Monitors your competitors 24/7 — tracking their pricing, marketing moves, product launches, and customer sentiment. You always know what they're doing before it affects you.</p>
-        <div class="caps">
-          <span class="cap">Competitor monitoring</span><span class="cap">Price tracking</span>
-          <span class="cap">Marketing intelligence</span><span class="cap">Market trend analysis</span>
-        </div>
-        <div class="mui">
-          <div class="mui-bar">
-            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-            <span class="mui-ttl">Competitor Tracker</span>
+      <div class="emp rv rv-scale d2" data-emp="compete">
+        <div class="emp-content">
+          <div class="emp-number">03</div>
+          <div class="emp-top"><div class="emp-name">Q:Compete</div></div>
+          <div class="emp-tag">Know your competition before they move.</div>
+          <p class="emp-desc">Monitors your competitors 24/7 — tracking their pricing, marketing moves, product launches, and customer sentiment. You always know what they're doing before it affects you.</p>
+          <div class="caps">
+            <span class="cap">Competitor monitoring</span><span class="cap">Price tracking</span>
+            <span class="cap">Marketing intelligence</span><span class="cap">Market trend analysis</span>
           </div>
-          <div class="mui-rows">
-            <div class="mrow"><span class="mrow-l">Competitor A</span><span class="mrow-v warn">Price dropped 12% ⚠</span></div>
-            <div class="mrow"><span class="mrow-l">Competitor B</span><span class="mrow-v info">New product launched</span></div>
-            <div class="mrow"><span class="mrow-l">Market sentiment</span><span class="mrow-v ok">Shifting to quality</span></div>
+          <a href="/demo/qcompete" class="btn btn-ghost" style="margin-top:.5rem;">Try Q:Compete →</a>
+        </div>
+        <div class="emp-visual">
+          <div class="mui">
+            <div class="mui-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <span class="mui-ttl">Scanning</span>
+              <span style="margin-left:auto;font-size:.7rem;font-weight:700;color:var(--accent);">3 tracked</span>
+            </div>
+            <div class="mui-rows">
+              <div class="mrow"><span class="mrow-l">Competitor A</span><span class="mrow-v warn">Price dropped 12% ⚠</span></div>
+              <div class="mrow"><span class="mrow-l">Competitor B</span><span class="mrow-v info">New product launched</span></div>
+              <div class="mrow"><span class="mrow-l">Market sentiment</span><span class="mrow-v ok">Shifting to quality</span></div>
+            </div>
           </div>
         </div>
       </div>
 
       <!-- Q:Ads -->
-      <div class="emp rv d3" data-emp="ads">
-        <div class="emp-top"><div class="emp-name">Q:Ads</div></div>
-        <div class="emp-tag">Ad spend that actually works.</div>
-        <p class="emp-desc">Creates ad copy, manages campaigns, optimises spend, and generates performance reports across Meta and Google — so every rupee you spend is working harder.</p>
-        <div class="caps">
-          <span class="cap">Ad copywriting</span><span class="cap">Campaign management</span>
-          <span class="cap">Spend optimisation</span><span class="cap">Performance analytics</span>
-        </div>
-        <div class="mui">
-          <div class="mui-bar">
-            <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-            <span class="mui-ttl">Ads Dashboard</span>
+      <div class="emp rv rv-scale d3" data-emp="ads">
+        <div class="emp-content">
+          <div class="emp-number">04</div>
+          <div class="emp-top"><div class="emp-name">Q:Ads</div></div>
+          <div class="emp-tag">Ad spend that actually works.</div>
+          <p class="emp-desc">Creates ad copy, manages campaigns, optimises spend, and generates performance reports across Meta and Google — so every rupee you spend is working harder.</p>
+          <div class="caps">
+            <span class="cap">Ad copywriting</span><span class="cap">Campaign management</span>
+            <span class="cap">Spend optimisation</span><span class="cap">Performance analytics</span>
           </div>
-          <div class="mui-grid">
-            <div class="mcell"><div class="lbl">CTR</div><div class="val"><span class="cnt" data-end="42" data-dec="1" data-suffix="%">0%</span></div><div class="chg cup">↑ vs last week</div></div>
-            <div class="mcell"><div class="lbl">ROAS</div><div class="val"><span class="cnt" data-end="38" data-dec="1" data-suffix="x">0x</span></div><div class="chg cup">↑ strong</div></div>
-            <div class="mcell"><div class="lbl">CPA</div><div class="val">₹<span class="cnt" data-end="312">0</span></div><div class="chg cup">↓ optimised</div></div>
-            <div class="mcell"><div class="lbl">Campaigns</div><div class="val"><span class="cnt" data-end="3">0</span></div><div class="chg cmut">Active</div></div>
+          <a href="/demo/qads" class="btn btn-ghost" style="margin-top:.5rem;">Try Q:Ads →</a>
+        </div>
+        <div class="emp-visual">
+          <div class="mui">
+            <div class="mui-bar">
+              <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+              <span class="mui-ttl">Campaigns</span>
+              <span style="margin-left:auto;font-size:.7rem;font-weight:600;color:var(--green);">● Live</span>
+            </div>
+            <div class="mui-grid">
+              <div class="mcell"><div class="lbl">CTR</div><div class="val"><span class="cnt" data-end="42" data-dec="1" data-suffix="%">0%</span></div><div class="chg cup">↑ vs last week</div></div>
+              <div class="mcell"><div class="lbl">ROAS</div><div class="val"><span class="cnt" data-end="38" data-dec="1" data-suffix="x">0x</span></div><div class="chg cup">↑ strong</div></div>
+              <div class="mcell"><div class="lbl">CPA</div><div class="val">₹<span class="cnt" data-end="312">0</span></div><div class="chg cup">↓ optimised</div></div>
+              <div class="mcell"><div class="lbl">Campaigns</div><div class="val"><span class="cnt" data-end="3">0</span></div><div class="chg cmut">Active</div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -523,6 +579,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
     </div>
   </div>
 </section>
+<hr class="section-glow">
 
 <!-- ══ Q:CA SPOTLIGHT ══ -->
 <section class="qca-spot" id="qca">
@@ -542,7 +599,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
           <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p" style="margin-top:.5rem;">Get Q:CA for Your Business →</a>
         </div>
       </div>
-      <div class="qca-box rv d3">
+      <div class="qca-box rv-right d3">
         <div class="qca-box-ttl">What Q:CA handles</div>
         <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>GST reconciliation and mismatch alerts</span></div>
         <div class="qca-item"><div class="qca-chk"><svg viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 2.5" stroke="#34D399" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span>ITC tracking and optimisation</span></div>
@@ -555,6 +612,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
     </div>
   </div>
 </section>
+<hr class="section-glow">
 
 <!-- ══ HOW IT WORKS ══ -->
 <section class="hiw" id="hiw">
@@ -570,6 +628,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
     </div>
   </div>
 </section>
+<hr class="section-glow">
 
 <!-- ══ PRICING ══ -->
 <section id="pricing">
@@ -580,7 +639,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
       <p>Start with an audit. Build what you need. Pay for results, not hours.</p>
     </div>
     <div class="p-grid">
-      <div class="pcard rv">
+      <div class="pcard rv rv-scale">
         <div class="p-tier">Audit</div>
         <div class="p-price">₹15,000</div>
         <div class="p-cad">one-time</div>
@@ -592,7 +651,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
         </ul>
         <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-s" style="width:100%;">Start with an Audit</a>
       </div>
-      <div class="pcard hot rv d1">
+      <div class="pcard hot rv rv-scale d1">
         <div class="hot-tag">Most Popular</div>
         <div class="p-tier">Core</div>
         <div class="p-price">₹49,999 <sub>setup</sub></div>
@@ -605,7 +664,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
         </ul>
         <a href="https://wa.me/91XXXXXXXXXX" class="btn btn-p" style="width:100%;">Get Started with Core</a>
       </div>
-      <div class="pcard rv d2">
+      <div class="pcard rv rv-scale d2">
         <div class="p-tier">Full OS</div>
         <div class="p-price">₹1,20,000 <sub>setup</sub></div>
         <div class="p-cad">+ ₹35,000/month</div>
@@ -621,6 +680,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:4rem 0 2
     <p class="p-note rv">International clients — pricing available in USD. <a href="https://wa.me/91XXXXXXXXXX">Book a call for a custom quote →</a></p>
   </div>
 </section>
+<hr class="section-glow">
 
 <!-- ══ FAQ ══ -->
 <section class="faq">
@@ -754,6 +814,9 @@ const obs=new IntersectionObserver(entries=>{
 
     // Scroll reveal
     if(el.classList.contains('rv')) el.classList.add('on');
+    if(el.classList.contains('rv-left')) el.classList.add('on');
+    if(el.classList.contains('rv-right')) el.classList.add('on');
+    if(el.classList.contains('rv-scale')) el.classList.add('on');
 
     // Manifesto line
     if(el.classList.contains('manifesto')) el.classList.add('on');
@@ -781,8 +844,49 @@ const obs=new IntersectionObserver(entries=>{
   });
 },{threshold:0.12,rootMargin:'0px 0px -30px 0px'});
 
-document.querySelectorAll('.rv,.manifesto,.hiw,.emp').forEach(el=>obs.observe(el));
+document.querySelectorAll('.rv,.rv-left,.rv-right,.rv-scale,.manifesto,.hiw,.emp').forEach(el=>obs.observe(el));
 
+/* ══ LOADER ══ */
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    document.getElementById('loader').classList.add('done');
+  },800);
+});
+
+/* ══ THREE.JS GLOBE ══ */
+(function(){
+  if(typeof THREE==='undefined')return;
+  const canvas=document.getElementById('globe-canvas');
+  const hero=document.getElementById('home');
+  const W=hero.clientWidth,H=hero.clientHeight;
+
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(75,W/H,0.1,100);
+  camera.position.z=2.8;
+
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(W,H,false);
+
+  const geo=new THREE.SphereGeometry(1.4,48,48);
+  const mat=new THREE.MeshBasicMaterial({color:0x6366F1,wireframe:true,transparent:true,opacity:0.12});
+  const mesh=new THREE.Mesh(geo,mat);
+  scene.add(mesh);
+
+  window.addEventListener('resize',()=>{
+    const w=hero.clientWidth,h=hero.clientHeight;
+    camera.aspect=w/h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w,h,false);
+  },{passive:true});
+
+  (function animate(){
+    requestAnimationFrame(animate);
+    mesh.rotation.y+=0.003;
+    mesh.rotation.x+=0.001;
+    renderer.render(scene,camera);
+  })();
+})();
 
 </script>
 </body>

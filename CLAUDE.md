@@ -1,107 +1,76 @@
-# QoreOS Website — Agent Instructions
+# QoreOS — Project Instructions
 
-## Project Overview
-Single-page marketing website for QoreOS — India's first Claude-native AIOS
-(AI Operating System). Builds and installs custom AI employees into Indian
-businesses. Target clients: Indian SMBs, D2C brands, startups.
+## What is QoreOS
+QoreOS is India's first Claude-native AIOS (AI Operating System). We build and install custom AI employees into Indian businesses so teams stop drowning in repetitive work and focus on actual growth. Human-first — AI works alongside people, not replacing them.
 
-Tech Stack: HTML5, CSS3, Vanilla JS — single index.html file.
-No frameworks. No build tools. No npm. No dependencies.
-Deployed via GitHub → Vercel.
+## Tech Stack
+- Frontend: HTML + CSS + Vanilla JS (single-file pages)
+- Backend: Node.js + Express
+- AI: Claude API (Anthropic) via @anthropic-ai/sdk
+- Deployment: GitHub → Vercel (not deployed yet)
+- No React. No frameworks. No TypeScript. Keep it simple.
 
-## Skills
-- For frontend design and UI: Read /mnt/skills/public/frontend-design/SKILL.md
-  BEFORE writing any code. Non-negotiable. This produces significantly
-  better visual output.
-- For coding: Use your own judgment.
+## Project Structure
+QoreOS/
+├── CLAUDE.md              # This file — project context
+├── index.html             # Main website (DO NOT modify without explicit instruction)
+├── .env                   # API keys — NEVER commit this
+├── package.json           # Node dependencies
+├── server.js              # Express backend for demo pages
+├── demo/
+│   ├── qsales.html        # Q:Sales interactive demo
+│   ├── qca.html           # Q:CA demo (not built yet)
+│   ├── qcompete.html      # Q:Compete demo (not built yet)
+│   └── qads.html          # Q:Ads demo (not built yet)
 
-## The WAT Architecture
+## Design Tokens (apply to ALL pages)
+- Background: #0D1117 (main site), #0A0E17 (demo pages)
+- Accent: #6366F1 (indigo)
+- Text primary: #F8FAFC
+- Text secondary: #94A3B8
+- Text muted: #475569
+- Card background: #1E2333 or #12172A
+- Green: #34D399 | Yellow: #FBBF24 | Red: #F87171
+- Heading font: Cormorant Garamond (serif)
+- Body font: Space Grotesk (sans-serif)
+- Border radius: 12px (cards), 9999px (pills/buttons)
 
-**Layer 1: Workflows (The Instructions)**
-- Markdown SOPs stored in workflows/
-- Each workflow defines objective, inputs, tools, outputs, edge cases
-- Written in plain language
+## Brand Voice
+- Confident, warm, premium, direct, no fluff
+- Not corporate, not startup-bro, not Western
+- Feels like a sharp young Indian founder built this
 
-**Layer 2: Agent (You)**
-- Read the relevant workflow, execute in correct sequence
-- Handle failures gracefully
-- Connect intent to execution without doing everything yourself
-- If a workflow doesn't exist for a task, ask before creating
+## AI Employees (4 flagship)
+1. Q:Sales — Full AI sales department (lead capture, qualification, follow-up, objection handling, pipeline, briefings)
+2. Q:CA — AI finance and compliance assistant (India-exclusive, GST, ITC, advance tax)
+3. Q:Compete — 24/7 competitor monitoring
+4. Q:Ads — Ad copy, campaign management, spend optimisation
 
-**Layer 3: Tools (The Execution)**
-- Scripts in tools/ for deterministic execution
-- Credentials in .env only — never hardcode secrets
-- Check tools/ before building anything new
+## Demo Pages
+- Each demo is a single self-contained HTML file with inline CSS and JS
+- Demos call the local Express server for Claude API access
+- API endpoints follow pattern: POST /api/{employee}/generate and POST /api/{employee}/detail
+- Backend keeps API key safe — never expose it to the browser
+- Handle errors gracefully with retry options
 
-## How to Operate
+## Rules
+- NEVER modify index.html unless explicitly told to
+- NEVER expose API keys in frontend code
+- NEVER use React, TypeScript, or any framework
+- Keep all pages as single HTML files with inline styles and scripts
+- All new features go through me first — don't create files without being told to
+- Indian context matters — use INR (₹), Indian names, Indian cities, Hinglish where appropriate
+- Mobile responsive is mandatory for everything
 
-**1. Look for existing tools first**
-Check tools/ before creating anything new.
+## Server
+- Express.js on port 3000
+- Serves index.html at root "/"
+- Serves demo pages from /demo/
+- API routes at /api/
+- Uses dotenv for environment variables
+- CORS enabled for local development
 
-**2. Learn and adapt when things fail**
-- Read the full error message
-- Fix and retest
-- Document what you learned in the workflow
-- Update so it never happens again
-
-**3. Keep workflows current**
-Don't create or overwrite workflows without asking unless explicitly told to.
-
-## Self-Improvement Loop
-1. Identify what broke
-2. Fix the tool/code
-3. Verify the fix works
-4. Update workflow with new approach
-5. Document so it never happens again
-
-## File Structure
-qoreos-website/
-  index.html         # Entire website — HTML + CSS + JS in one file
-  CLAUDE.md          # This file
-  workflows/         # SOPs
-  tools/             # Scripts
-  .env               # Secrets — never commit
-
-## Design Direction (NON-NEGOTIABLE)
-- Brand: QoreOS
-- Tagline: "Your Business, Upgraded at Its Core."
-- Feel: Premium, warm dark — NOT pure black, NOT white
-- Typography: Distinctive premium font pairing — NOT Inter, NOT Roboto, NOT Arial
-- Accent color: Your choice — must feel premium for Indian AI brand
-- Style: Typography-first, clean hierarchy, generous spacing
-- Reference: Linear.app confidence + Tenex.co writing energy
-- Mobile responsive: Mandatory
-
-## Project Rules
-1. Single index.html — everything inside one file
-2. Real client-facing product — polished, professional, no shortcuts
-3. Mobile responsive with hamburger menu
-4. Smooth scroll between all sections
-5. All CTAs link to WhatsApp placeholder: https://wa.me/91XXXXXXXXXX
-6. NO lorem ipsum anywhere — only provided copy
-7. NO external frameworks or CDN libraries
-8. Scroll-triggered animations on section reveal
-9. Fixed navbar — transparent, blurs on scroll
-10. Hero: full viewport height, centered, animated entrance
-11. FAQ: accordion with smooth open/close
-12. Pricing: three columns, middle highlighted as Most Popular
-
-## Token-Efficient Communication
+## Token Efficiency
 - No fluff — start with action
-- Just create/modify files directly
-- Show final code only, not iterations
-- Don't show unchanged code when editing
-- "✓" = just confirm
-- "?" = brief explanation
-- "next" = skip explanation, execute
-- "explain" = full teaching mode
-
-## Always Explain (Worth the Tokens)
-- Security issues
-- Breaking changes
-- Data loss risks
-- Critical errors
-
-## Bottom Line
-Read SKILL.md first. Make bold design decisions. Build something memorable
-and premium. Stay token-efficient. Stay reliable.
+- Modify files directly, no preamble
+- Confirm with ✓, ask with ?

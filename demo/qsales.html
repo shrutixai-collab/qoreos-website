@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q:Sales Demo — QoreOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0A0E17;
+    --bg2: #0D1117;
+    --card: #12172A;
+    --card2: #1E2333;
+    --border: rgba(99,102,241,0.12);
+    --border-solid: rgba(99,102,241,0.25);
+    --indigo: #6366F1;
+    --indigo-dim: rgba(99,102,241,0.15);
+    --cyan: #22D3EE;
+    --green: #34D399;
+    --yellow: #FBBF24;
+    --red: #F87171;
+    --text: #F8FAFC;
+    --text2: #94A3B8;
+    --text3: #475569;
+    --radius: 16px;
+    --radius-sm: 12px;
+    --font-head: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAVBAR ─── */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(10,14,23,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: var(--font-head); font-size: 1.5rem; font-weight: 700; text-decoration: none; letter-spacing: -0.01em; }
+  .nav-logo span { color: var(--text); }
+  .nav-logo em { color: var(--indigo); font-style: normal; }
+  .nav-back { color: var(--text2); font-size: 0.85rem; text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+  .nav-back:hover { color: var(--text); }
+
+  /* ─── SCREENS ─── */
+  .screen { display: none; opacity: 0; transition: opacity 0.4s ease; }
+  .screen.active { display: flex; opacity: 1; }
+
+  /* ─── SCREEN 1: ENTRY FORM ─── */
+  #screen-entry {
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px 60px;
+  }
+  .entry-inner { width: 100%; max-width: 600px; }
+  .entry-headline {
+    font-family: var(--font-head);
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .entry-headline em { font-style: italic; color: var(--indigo); }
+  .entry-sub {
+    font-size: 1rem;
+    color: var(--text2);
+    line-height: 1.65;
+    margin-bottom: 48px;
+    max-width: 500px;
+  }
+  .form-group { margin-bottom: 28px; }
+  .form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text2);
+    margin-bottom: 10px;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .form-input::placeholder { color: var(--text3); }
+  .form-input:focus {
+    border-color: var(--indigo);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+  }
+  .form-input.invalid { border-color: var(--red); }
+  .pills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .pill {
+    padding: 8px 18px;
+    border-radius: 9999px;
+    border: 1px solid var(--border-solid);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: transparent;
+    font-family: var(--font-body);
+    user-select: none;
+  }
+  .pill:hover { border-color: var(--indigo); color: var(--text); }
+  .pill.selected {
+    background: var(--indigo);
+    border-color: var(--indigo);
+    color: #fff;
+  }
+  .pill.invalid { border-color: var(--red); }
+  .btn-launch {
+    width: 100%;
+    padding: 16px 32px;
+    background: var(--indigo);
+    color: #fff;
+    border: none;
+    border-radius: 9999px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    transition: all 0.2s;
+    margin-top: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-launch:hover { background: #4F46E5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.35); }
+  .btn-launch:active { transform: translateY(0); }
+  .btn-launch:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ─── SCREEN 2: LOADING ─── */
+  #screen-loading {
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px 60px;
+    text-align: center;
+  }
+  .loading-logo {
+    font-family: var(--font-head);
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  .loading-logo span { color: var(--text); }
+  .loading-logo em { color: var(--indigo); font-style: normal; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+  .loading-status {
+    font-size: 0.9rem;
+    color: var(--text2);
+    min-height: 24px;
+    margin-bottom: 32px;
+    transition: opacity 0.3s;
+  }
+  .loading-bar-wrap {
+    width: 280px;
+    height: 3px;
+    background: var(--card2);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+  .loading-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    border-radius: 9999px;
+    width: 0%;
+    animation: loadbar 4.5s ease-out forwards;
+  }
+  @keyframes loadbar { 0%{width:0%} 30%{width:35%} 60%{width:65%} 85%{width:85%} 100%{width:95%} }
+
+  /* ─── SCREEN 3: DISCOVERY ─── */
+  #screen-discovery {
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 24px 60px;
+  }
+  .discovery-card {
+    width: 100%; max-width: 680px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    animation: fadeSlideUp 0.6s ease both;
+  }
+  @keyframes fadeSlideUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  .discovery-title {
+    font-family: var(--font-head);
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .discovery-title em { font-style: italic; color: var(--indigo); }
+  .discovery-sub { font-size: 0.85rem; color: var(--text3); margin-bottom: 32px; }
+  .discovery-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 28px;
+  }
+  .discovery-item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    animation: fadeSlideUp 0.5s ease both;
+  }
+  .discovery-item-label { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+  .discovery-item-value { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+  .discovery-rec {
+    background: var(--indigo-dim);
+    border: 1px solid var(--border-solid);
+    border-radius: var(--radius-sm);
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: var(--text2);
+    margin-bottom: 32px;
+  }
+  .discovery-rec strong { color: var(--indigo); }
+  .btn-enter {
+    width: 100%;
+    padding: 15px 32px;
+    background: var(--indigo);
+    color: #fff;
+    border: none;
+    border-radius: 9999px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn-enter:hover { background: #4F46E5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.3); }
+
+  /* ─── SCREEN 4: DASHBOARD ─── */
+  #screen-dashboard {
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: 70px;
+  }
+
+  /* Dashboard Top Bar */
+  .dash-topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    padding: 14px 32px;
+    background: rgba(10,14,23,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .dash-title { font-size: 0.9rem; font-weight: 600; color: var(--text); white-space: nowrap; }
+  .dash-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .pipeline-value { font-size: 0.85rem; color: var(--text2); }
+  .pipeline-value strong { color: var(--green); }
+  .badge-powered {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+    padding: 4px 10px; border-radius: 9999px;
+    background: var(--indigo-dim); color: var(--indigo);
+    border: 1px solid var(--border-solid);
+  }
+  .btn-restart {
+    font-size: 0.8rem; font-weight: 600;
+    padding: 7px 16px; border-radius: 9999px;
+    border: 1px solid var(--border-solid);
+    background: transparent; color: var(--text2);
+    cursor: pointer; transition: all 0.2s; font-family: var(--font-body);
+  }
+  .btn-restart:hover { border-color: var(--indigo); color: var(--text); }
+
+  /* Dashboard Body */
+  .dash-body { padding: 40px 32px 80px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+  /* Section headers */
+  .section-label {
+    font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text3); font-weight: 600; margin-bottom: 16px;
+  }
+
+  /* Boss Briefing */
+  .briefing-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--indigo);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 40px;
+    animation: fadeSlideUp 0.5s ease 0.1s both;
+  }
+  .briefing-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .briefing-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--indigo); display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .briefing-who { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+  .briefing-when { font-size: 0.75rem; color: var(--text3); }
+  .briefing-text {
+    font-size: 0.95rem; line-height: 1.75; color: var(--text2);
+    white-space: pre-line;
+  }
+  .briefing-cursor { display: inline-block; width: 2px; height: 1em; background: var(--indigo); animation: blink 0.8s step-end infinite; margin-left: 2px; vertical-align: text-bottom; }
+  @keyframes blink { 50% { opacity:0; } }
+
+  /* Pipeline Board */
+  .pipeline-section { margin-bottom: 40px; animation: fadeSlideUp 0.5s ease 0.2s both; }
+  .kanban-board { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 12px; }
+  .kanban-board::-webkit-scrollbar { height: 4px; }
+  .kanban-board::-webkit-scrollbar-track { background: var(--card); border-radius: 9999px; }
+  .kanban-board::-webkit-scrollbar-thumb { background: var(--border-solid); border-radius: 9999px; }
+  .kanban-col {
+    flex: 0 0 260px; min-width: 260px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .kanban-col-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .kanban-col-title { font-size: 0.82rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text2); }
+  .kanban-col-count {
+    font-size: 0.72rem; font-weight: 700;
+    background: var(--bg); color: var(--text3);
+    padding: 2px 8px; border-radius: 9999px;
+    border: 1px solid var(--border);
+  }
+  /* Column accent colors */
+  .kanban-col.col-new .kanban-col-title { color: var(--cyan); }
+  .kanban-col.col-interested .kanban-col-title { color: var(--yellow); }
+  .kanban-col.col-negotiation .kanban-col-title { color: var(--indigo); }
+  .kanban-col.col-won .kanban-col-title { color: var(--green); }
+
+  /* Lead Cards */
+  .lead-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: cardIn 0.4s ease forwards;
+  }
+  @keyframes cardIn { to { opacity:1; transform:translateY(0); } }
+  .lead-card:last-child { margin-bottom: 0; }
+  .lead-card:hover {
+    border-color: var(--indigo);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(99,102,241,0.15);
+  }
+  .lead-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .lead-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .lead-city { font-size: 0.75rem; color: var(--text3); }
+  .lead-score-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+  }
+  .lead-score-dot.hot { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .lead-score-dot.warm { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+  .lead-score-dot.cold { background: var(--text3); }
+  .lead-badges { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+  .badge {
+    font-size: 0.68rem; font-weight: 600; padding: 3px 8px; border-radius: 9999px;
+  }
+  .badge-source { background: rgba(34,211,238,0.12); color: var(--cyan); border: 1px solid rgba(34,211,238,0.2); }
+  .badge-time { background: var(--card2); color: var(--text3); border: 1px solid var(--border); }
+  .lead-message {
+    font-size: 0.8rem; color: var(--text2); line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .lead-view {
+    font-size: 0.75rem; font-weight: 600; color: var(--indigo);
+    text-decoration: none; display: flex; align-items: center; gap: 4px;
+    background: none; border: none; cursor: pointer; padding: 0; font-family: var(--font-body);
+  }
+  .lead-view:hover { color: var(--cyan); }
+
+  /* Insights */
+  .insights-section { margin-bottom: 40px; animation: fadeSlideUp 0.5s ease 0.3s both; }
+  .insights-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .insight-icon { font-size: 1.4rem; }
+  .insight-text { font-size: 0.83rem; color: var(--text2); line-height: 1.55; }
+
+  /* USP Section */
+  .usp-section { margin-bottom: 48px; animation: fadeSlideUp 0.5s ease 0.4s both; }
+  .usp-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .usp-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+  }
+  .usp-title { font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .usp-text { font-size: 0.78rem; color: var(--text2); line-height: 1.55; }
+
+  /* Final CTA */
+  .final-cta {
+    text-align: center;
+    padding: 48px 24px;
+    border-top: 1px solid var(--border);
+    animation: fadeSlideUp 0.5s ease 0.5s both;
+  }
+  .final-cta h2 {
+    font-family: var(--font-head);
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .final-cta p { font-size: 0.9rem; color: var(--text2); margin-bottom: 28px; }
+  .btn-cta {
+    display: inline-block;
+    padding: 15px 36px;
+    background: var(--indigo);
+    color: #fff;
+    border-radius: 9999px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn-cta:hover { background: #4F46E5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(99,102,241,0.35); }
+  .final-back { display: block; margin-top: 20px; font-size: 0.85rem; color: var(--text3); text-decoration: none; transition: color 0.2s; }
+  .final-back:hover { color: var(--text2); }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+    align-items: flex-start; justify-content: flex-end;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-panel {
+    width: min(520px, 100vw);
+    height: 100vh;
+    background: var(--bg2);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 32px;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+    position: relative;
+  }
+  .modal-overlay.open .modal-panel { transform: translateX(0); }
+  .modal-close {
+    position: absolute; top: 20px; right: 20px;
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--text2); border-radius: 50%;
+    width: 32px; height: 32px; cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-family: var(--font-body);
+  }
+  .modal-close:hover { background: var(--card2); color: var(--text); }
+  .modal-lead-name { font-family: var(--font-head); font-size: 1.8rem; font-weight: 700; margin-bottom: 6px; }
+  .modal-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .badge-score {
+    font-size: 0.72rem; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase;
+  }
+  .badge-score.hot { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.25); }
+  .badge-score.warm { background: rgba(251,191,36,0.15); color: var(--yellow); border: 1px solid rgba(251,191,36,0.25); }
+  .badge-score.cold { background: rgba(71,85,105,0.3); color: var(--text3); border: 1px solid var(--border); }
+  .modal-section { margin-bottom: 24px; }
+  .modal-section-label { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); font-weight: 600; margin-bottom: 10px; }
+  .chat-bubble {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px 16px 16px 4px;
+    padding: 14px 18px;
+    font-size: 0.9rem; color: var(--text); line-height: 1.65;
+  }
+  .intent-text { font-size: 0.85rem; color: var(--cyan); font-weight: 500; }
+  .btn-gen {
+    width: 100%; padding: 14px; background: var(--indigo); color: #fff;
+    border: none; border-radius: 9999px; font-family: var(--font-body);
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn-gen:hover { background: #4F46E5; }
+  .btn-gen:disabled { opacity: 0.5; cursor: not-allowed; }
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .detail-results { margin-top: 24px; display: flex; flex-direction: column; gap: 16px; }
+  .detail-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px;
+    animation: fadeSlideUp 0.4s ease both;
+  }
+  .detail-card.objection { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.05); }
+  .detail-card-label { font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); font-weight: 600; margin-bottom: 8px; }
+  .detail-card-text { font-size: 0.87rem; color: var(--text2); line-height: 1.65; }
+  .detail-card.reply .detail-card-text { color: var(--text); font-style: italic; }
+  .btn-copy {
+    margin-top: 10px; font-size: 0.78rem; font-weight: 600;
+    padding: 6px 14px; border-radius: 9999px; border: 1px solid var(--border-solid);
+    background: transparent; color: var(--indigo); cursor: pointer; font-family: var(--font-body);
+    transition: all 0.2s;
+  }
+  .btn-copy:hover { background: var(--indigo); color: #fff; }
+  .modal-error { font-size: 0.85rem; color: var(--red); text-align: center; padding: 12px; }
+
+  /* ─── ERROR STATE ─── */
+  .error-state {
+    text-align: center; padding: 48px 24px;
+    flex-direction: column; align-items: center; gap: 16px;
+  }
+  .error-state.active { display: flex; }
+  .error-title { font-family: var(--font-head); font-size: 1.6rem; color: var(--text); }
+  .error-sub { font-size: 0.88rem; color: var(--text2); }
+  .btn-retry {
+    padding: 12px 28px; background: var(--indigo); color: #fff;
+    border: none; border-radius: 9999px; font-family: var(--font-body);
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-retry:hover { background: #4F46E5; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    .usp-grid { grid-template-columns: repeat(3, 1fr); }
+    .insights-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .nav { padding: 14px 20px; }
+    .dash-topbar { padding: 12px 20px; }
+    .dash-body { padding: 32px 20px 60px; }
+    .discovery-card { padding: 28px 20px; }
+    .discovery-grid { grid-template-columns: 1fr; }
+    .usp-grid { grid-template-columns: 1fr 1fr; }
+    .insights-grid { grid-template-columns: 1fr 1fr; }
+    .kanban-board { flex-direction: column; }
+    .kanban-col { flex: none; min-width: 0; width: 100%; }
+    .modal-overlay { align-items: flex-end; justify-content: center; }
+    .modal-panel {
+      width: 100vw; height: 90vh;
+      border-left: none; border-top: 1px solid var(--border);
+      border-radius: 20px 20px 0 0;
+      transform: translateY(100%);
+    }
+    .modal-overlay.open .modal-panel { transform: translateY(0); }
+  }
+  @media (max-width: 480px) {
+    .usp-grid { grid-template-columns: 1fr; }
+    .insights-grid { grid-template-columns: 1fr; }
+    .dash-topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .dash-meta { width: 100%; justify-content: space-between; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="main-nav">
+  <a href="/" class="nav-logo"><span>Qore</span><em>OS</em></a>
+  <a href="/" class="nav-back">← Back to home</a>
+</nav>
+
+<!-- SCREEN 1: ENTRY FORM -->
+<section class="screen active" id="screen-entry">
+  <div class="entry-inner">
+    <h1 class="entry-headline">See <em>Q:Sales</em> run your<br>sales department.</h1>
+    <p class="entry-sub">Enter your business details. Q:Sales will scan, analyse, and build your personalised sales command center in seconds.</p>
+    <form id="entry-form" novalidate>
+      <div class="form-group">
+        <label class="form-label" for="biz-name">What's your business name?</label>
+        <input class="form-input" id="biz-name" type="text" placeholder="e.g., GlowHerbs" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="product">What do you sell in one line?</label>
+        <input class="form-input" id="product" type="text" placeholder="e.g., handmade skincare products" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Where do your leads come from?</label>
+        <div class="pills" id="lead-sources">
+          <button type="button" class="pill" data-val="WhatsApp">WhatsApp</button>
+          <button type="button" class="pill" data-val="Instagram DMs">Instagram DMs</button>
+          <button type="button" class="pill" data-val="Website">Website</button>
+          <button type="button" class="pill" data-val="Google Ads">Google Ads</button>
+          <button type="button" class="pill" data-val="No system yet">No system yet</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">How many leads per week?</label>
+        <div class="pills" id="lead-volume">
+          <button type="button" class="pill" data-val="1-10">1-10</button>
+          <button type="button" class="pill" data-val="10-50">10-50</button>
+          <button type="button" class="pill" data-val="50-200">50-200</button>
+          <button type="button" class="pill" data-val="200+">200+</button>
+        </div>
+      </div>
+      <button type="submit" class="btn-launch" id="btn-launch">Launch Q:Sales →</button>
+    </form>
+  </div>
+</section>
+
+<!-- SCREEN 2: LOADING -->
+<section class="screen" id="screen-loading">
+  <div class="loading-logo"><span>Qore</span><em>OS</em></div>
+  <div class="loading-status" id="loading-status">Initialising Q:Sales...</div>
+  <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+</section>
+
+<!-- SCREEN 3: DISCOVERY -->
+<section class="screen" id="screen-discovery">
+  <div class="discovery-card" id="discovery-card">
+    <h2 class="discovery-title" id="discovery-title">Loading...</h2>
+    <p class="discovery-sub">Based on Q:Sales market intelligence scan</p>
+    <div class="discovery-grid" id="discovery-grid"></div>
+    <div class="discovery-rec" id="discovery-rec"></div>
+    <button class="btn-enter" id="btn-enter-dashboard">Enter Your Dashboard →</button>
+  </div>
+</section>
+
+<!-- SCREEN 4: DASHBOARD -->
+<section class="screen" id="screen-dashboard">
+  <!-- Top bar injected by JS -->
+  <div class="dash-body" id="dash-body">
+    <!-- Boss Briefing -->
+    <div class="briefing-card" id="briefing-card">
+      <div class="briefing-header">
+        <div class="briefing-avatar">Q:S</div>
+        <div>
+          <div class="briefing-who">Q:Sales — Morning Briefing</div>
+          <div class="briefing-when" id="briefing-date"></div>
+        </div>
+      </div>
+      <div class="briefing-text" id="briefing-text"></div>
+    </div>
+
+    <!-- Pipeline -->
+    <div class="pipeline-section">
+      <div class="section-label">Live Pipeline</div>
+      <div class="kanban-board" id="kanban-board"></div>
+    </div>
+
+    <!-- Insights -->
+    <div class="insights-section">
+      <div class="section-label">Sales Intelligence</div>
+      <div class="insights-grid" id="insights-grid"></div>
+    </div>
+
+    <!-- USPs -->
+    <div class="usp-section">
+      <div class="section-label">What Q:Sales does for you, every day</div>
+      <div class="usp-grid" id="usp-grid"></div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="final-cta">
+      <h2>Want Q:Sales running in your business?</h2>
+      <p>Book a free 30-minute strategy call. We'll map out your sales system and show you exactly what Q:Sales would do for you.</p>
+      <a href="https://wa.me/91XXXXXXXXXX" class="btn-cta" target="_blank">Book a Free Strategy Call →</a>
+      <a href="/" class="final-back">← Back to QoreOS</a>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-panel" id="modal-panel">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<script>
+  // ─── STATE ───────────────────────────────────────────────────────
+  let state = {
+    bizName: '',
+    product: '',
+    leadSources: [],
+    leadVolume: '',
+    dashboardData: null
+  };
+
+  // ─── SCREEN MANAGEMENT ───────────────────────────────────────────
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => {
+      s.classList.remove('active');
+      s.style.opacity = '0';
+    });
+    const target = document.getElementById(id);
+    target.classList.add('active');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { target.style.opacity = '1'; });
+    });
+  }
+
+  // ─── FORM ─────────────────────────────────────────────────────────
+  // Multi-select lead sources
+  document.getElementById('lead-sources').addEventListener('click', e => {
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    pill.classList.toggle('selected');
+    state.leadSources = [...document.querySelectorAll('#lead-sources .pill.selected')].map(p => p.dataset.val);
+  });
+
+  // Single-select lead volume
+  document.getElementById('lead-volume').addEventListener('click', e => {
+    const pill = e.target.closest('.pill');
+    if (!pill) return;
+    document.querySelectorAll('#lead-volume .pill').forEach(p => p.classList.remove('selected'));
+    pill.classList.add('selected');
+    state.leadVolume = pill.dataset.val;
+  });
+
+  // Form submit
+  document.getElementById('entry-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const nameInput = document.getElementById('biz-name');
+    const productInput = document.getElementById('product');
+    let valid = true;
+
+    nameInput.classList.remove('invalid');
+    productInput.classList.remove('invalid');
+    document.querySelectorAll('#lead-sources .pill').forEach(p => p.classList.remove('invalid'));
+    document.querySelectorAll('#lead-volume .pill').forEach(p => p.classList.remove('invalid'));
+
+    if (!nameInput.value.trim()) { nameInput.classList.add('invalid'); valid = false; }
+    if (!productInput.value.trim()) { productInput.classList.add('invalid'); valid = false; }
+    if (!state.leadSources.length) {
+      document.querySelectorAll('#lead-sources .pill').forEach(p => p.classList.add('invalid'));
+      valid = false;
+    }
+    if (!state.leadVolume) {
+      document.querySelectorAll('#lead-volume .pill').forEach(p => p.classList.add('invalid'));
+      valid = false;
+    }
+    if (!valid) return;
+
+    state.bizName = nameInput.value.trim();
+    state.product = productInput.value.trim();
+
+    await launchDemo();
+  });
+
+  // ─── LAUNCH ───────────────────────────────────────────────────────
+  async function launchDemo() {
+    showScreen('screen-loading');
+    startLoadingMessages();
+
+    try {
+      const resp = await fetch('http://localhost:3000/api/qsales/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: state.bizName,
+          product: state.product,
+          leadSource: state.leadSources.join(', '),
+          leadsPerWeek: state.leadVolume
+        })
+      });
+
+      if (!resp.ok) throw new Error('Server error ' + resp.status);
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error);
+
+      state.dashboardData = data;
+      renderDiscovery(data);
+      showScreen('screen-discovery');
+    } catch (err) {
+      console.error(err);
+      showErrorScreen(err.message);
+    }
+  }
+
+  // ─── LOADING MESSAGES ────────────────────────────────────────────
+  function startLoadingMessages() {
+    const el = document.getElementById('loading-status');
+    const msgs = [
+      `Scanning public data about ${state.bizName}...`,
+      'Analysing your market and competition...',
+      'Generating your leads and pipeline...',
+      'Preparing your sales briefing...',
+      'Building your command center...'
+    ];
+    let i = 0;
+    el.textContent = msgs[0];
+    const iv = setInterval(() => {
+      i++;
+      if (i >= msgs.length) { clearInterval(iv); return; }
+      el.style.opacity = '0';
+      setTimeout(() => { el.textContent = msgs[i]; el.style.opacity = '1'; }, 300);
+    }, 1500);
+  }
+
+  // ─── DISCOVERY ───────────────────────────────────────────────────
+  function renderDiscovery(data) {
+    const d = data.discovery;
+    document.getElementById('discovery-title').innerHTML =
+      `Here's what Q:Sales found about <em>${state.bizName}</em>`;
+
+    const grid = document.getElementById('discovery-grid');
+    const items = [
+      { label: 'Business Category', value: d.category },
+      { label: 'Active Platforms', value: (d.platforms || []).join(', ') },
+      { label: 'Market Segment', value: d.segment },
+      { label: 'Competition Level', value: d.competition }
+    ];
+    grid.innerHTML = items.map((it, i) => `
+      <div class="discovery-item" style="animation-delay:${0.1 + i * 0.08}s">
+        <div class="discovery-item-label">${it.label}</div>
+        <div class="discovery-item-value">${it.value || '—'}</div>
+      </div>
+    `).join('');
+
+    document.getElementById('discovery-rec').innerHTML =
+      `<strong>Recommended Focus —</strong> ${d.recommendation}`;
+  }
+
+  document.getElementById('btn-enter-dashboard').addEventListener('click', () => {
+    renderDashboard(state.dashboardData);
+    showScreen('screen-dashboard');
+    window.scrollTo(0, 0);
+  });
+
+  // ─── DASHBOARD ───────────────────────────────────────────────────
+  function renderDashboard(data) {
+    // Top bar
+    let topbar = document.getElementById('dash-topbar-el');
+    if (!topbar) {
+      topbar = document.createElement('div');
+      topbar.id = 'dash-topbar-el';
+      topbar.className = 'dash-topbar';
+      document.getElementById('screen-dashboard').insertBefore(topbar, document.getElementById('dash-body'));
+    }
+    topbar.innerHTML = `
+      <div class="dash-title">${escHtml(state.bizName)} — Sales Command Center</div>
+      <div class="dash-meta">
+        <span class="pipeline-value">Pipeline: <strong>${data.pipelineValue || '—'}</strong></span>
+        <span class="badge-powered">Powered by Q:Sales</span>
+        <button class="btn-restart" id="btn-restart">Start Over</button>
+      </div>
+    `;
+    document.getElementById('btn-restart').addEventListener('click', resetDemo);
+
+    // Briefing
+    const now = new Date();
+    document.getElementById('briefing-date').textContent =
+      now.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' }) + ' · Good morning';
+    typeBriefing(data.briefing || '');
+
+    // Pipeline
+    renderKanban(data.pipeline || {});
+
+    // Insights
+    renderInsights(data.insights || []);
+
+    // USPs
+    renderUSPs();
+  }
+
+  // Typing animation for briefing
+  function typeBriefing(text) {
+    const el = document.getElementById('briefing-text');
+    el.innerHTML = '';
+    const cursor = document.createElement('span');
+    cursor.className = 'briefing-cursor';
+    el.appendChild(cursor);
+
+    const words = text.split(' ');
+    let i = 0;
+    const iv = setInterval(() => {
+      if (i >= words.length) { cursor.remove(); clearInterval(iv); return; }
+      const node = document.createTextNode((i === 0 ? '' : ' ') + words[i]);
+      el.insertBefore(node, cursor);
+      i++;
+    }, 40);
+  }
+
+  // Kanban board
+  const COLS = [
+    { key: 'new', label: 'New', cls: 'col-new' },
+    { key: 'contacted', label: 'Contacted', cls: 'col-contacted' },
+    { key: 'interested', label: 'Interested', cls: 'col-interested' },
+    { key: 'negotiation', label: 'Negotiation', cls: 'col-negotiation' },
+    { key: 'won', label: 'Won', cls: 'col-won' }
+  ];
+
+  function renderKanban(pipeline) {
+    const board = document.getElementById('kanban-board');
+    board.innerHTML = '';
+    let delay = 0;
+    COLS.forEach(col => {
+      const leads = pipeline[col.key] || [];
+      const colEl = document.createElement('div');
+      colEl.className = `kanban-col ${col.cls}`;
+      colEl.innerHTML = `
+        <div class="kanban-col-header">
+          <span class="kanban-col-title">${col.label}</span>
+          <span class="kanban-col-count">${leads.length}</span>
+        </div>
+      `;
+      leads.forEach(lead => {
+        const card = document.createElement('div');
+        card.className = 'lead-card';
+        card.style.animationDelay = `${delay * 0.08}s`;
+        card.innerHTML = `
+          <div class="lead-card-top">
+            <div>
+              <div class="lead-name">${escHtml(lead.name)}</div>
+              <div class="lead-city">${escHtml(lead.city)}</div>
+            </div>
+            <div class="lead-score-dot ${lead.score}"></div>
+          </div>
+          <div class="lead-badges">
+            <span class="badge badge-source">${escHtml(lead.source)}</span>
+            <span class="badge badge-time">${escHtml(lead.time)}</span>
+          </div>
+          <div class="lead-message">${escHtml(lead.message)}</div>
+          <button class="lead-view" data-lead='${JSON.stringify(lead)}'>View Details →</button>
+        `;
+        colEl.appendChild(card);
+        delay++;
+      });
+      board.appendChild(colEl);
+    });
+
+    // Attach lead click handlers
+    board.querySelectorAll('.lead-view').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const lead = JSON.parse(btn.getAttribute('data-lead'));
+        openModal(lead);
+      });
+    });
+  }
+
+  // Insights
+  const ICONS = ['📊', '⚡', '🎯', '💡'];
+  function renderInsights(insights) {
+    const grid = document.getElementById('insights-grid');
+    grid.innerHTML = insights.map((ins, i) => `
+      <div class="insight-card">
+        <div class="insight-icon">${ICONS[i] || '📌'}</div>
+        <div class="insight-text">${escHtml(ins)}</div>
+      </div>
+    `).join('');
+  }
+
+  // USPs
+  function renderUSPs() {
+    const usps = [
+      { title: 'Hinglish-Native Intelligence', text: 'Understands how Indians actually talk. Hindi, English, Hinglish, typos, voice note style — all of it.' },
+      { title: 'Full Sales Lifecycle', text: 'From first message to final payment. Lead capture, qualification, follow-up, objection handling, closing.' },
+      { title: 'WhatsApp-First', text: 'Built for where Indian businesses actually sell. Lives inside WhatsApp, Instagram, and the tools you already use.' },
+      { title: 'Boss Mode', text: 'Daily sales briefings delivered to you. Who\'s hot, who\'s cold, what to focus on. No dashboard checking needed.' },
+      { title: 'Objection Memory', text: 'Learns from every conversation. Surfaces patterns like "delivery cost is killing 40% of your deals."' }
+    ];
+    document.getElementById('usp-grid').innerHTML = usps.map(u => `
+      <div class="usp-card">
+        <div class="usp-title">${u.title}</div>
+        <div class="usp-text">${u.text}</div>
+      </div>
+    `).join('');
+  }
+
+  // ─── MODAL ───────────────────────────────────────────────────────
+  function openModal(lead) {
+    const overlay = document.getElementById('modal-overlay');
+    const content = document.getElementById('modal-content');
+    content.innerHTML = `
+      <div class="modal-lead-name">${escHtml(lead.name)}</div>
+      <div class="modal-badges">
+        <span class="badge badge-source">${escHtml(lead.source)}</span>
+        <span class="badge-score ${lead.score}">${lead.score.toUpperCase()}</span>
+        <span class="badge badge-time">${escHtml(lead.time)}</span>
+        <span class="badge" style="background:rgba(99,102,241,0.12);color:#6366F1;border:1px solid rgba(99,102,241,0.2);">${escHtml(lead.city)}</span>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">Original Message</div>
+        <div class="chat-bubble">${escHtml(lead.message)}</div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">Q:Sales Analysis</div>
+        <div class="intent-text">${escHtml(lead.intent)}</div>
+      </div>
+      <button class="btn-gen" id="btn-gen-detail">
+        <span>Generate Reply &amp; Action Plan</span>
+      </button>
+      <div id="modal-detail-area"></div>
+    `;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    document.getElementById('btn-gen-detail').addEventListener('click', () => generateLeadDetail(lead));
+  }
+
+  document.getElementById('modal-close').addEventListener('click', closeModal);
+  document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  });
+
+  function closeModal() {
+    const overlay = document.getElementById('modal-overlay');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  async function generateLeadDetail(lead) {
+    const btn = document.getElementById('btn-gen-detail');
+    const area = document.getElementById('modal-detail-area');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div><span>Analysing lead...</span>';
+    area.innerHTML = '';
+
+    try {
+      const resp = await fetch('http://localhost:3000/api/qsales/lead-detail', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessName: state.bizName, product: state.product, lead })
+      });
+      if (!resp.ok) throw new Error('Server error ' + resp.status);
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error);
+
+      area.innerHTML = `
+        <div class="detail-results">
+          <div class="detail-card reply" style="animation-delay:0s">
+            <div class="detail-card-label">Suggested Reply</div>
+            <div class="detail-card-text">"${escHtml(data.suggestedReply)}"</div>
+            <button class="btn-copy" onclick="copyText(this, \`${data.suggestedReply.replace(/`/g,'\\`')}\`)">Copy Reply</button>
+          </div>
+          <div class="detail-card" style="animation-delay:0.08s">
+            <div class="detail-card-label">Follow-up Plan</div>
+            <div class="detail-card-text">${escHtml(data.followUpPlan)}</div>
+          </div>
+          ${data.objectionFlag ? `
+          <div class="detail-card objection" style="animation-delay:0.16s">
+            <div class="detail-card-label">⚠ Objection Detected</div>
+            <div class="detail-card-text">${escHtml(data.objectionFlag)}</div>
+          </div>` : ''}
+          <div class="detail-card" style="animation-delay:0.24s">
+            <div class="detail-card-label">Sales Tip</div>
+            <div class="detail-card-text">💡 ${escHtml(data.salesTip)}</div>
+          </div>
+        </div>
+      `;
+      btn.style.display = 'none';
+    } catch (err) {
+      area.innerHTML = `<div class="modal-error">Something went wrong: ${escHtml(err.message)}<br><br><button class="btn-retry" onclick="generateLeadDetail(${JSON.stringify(lead).replace(/"/g,'&quot;')})">Retry</button></div>`;
+      btn.disabled = false;
+      btn.innerHTML = '<span>Generate Reply &amp; Action Plan</span>';
+    }
+  }
+
+  // ─── ERROR SCREEN ────────────────────────────────────────────────
+  function showErrorScreen(msg) {
+    const el = document.getElementById('screen-loading');
+    el.innerHTML = `
+      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;">
+        <div class="error-title" style="font-family:var(--font-head);font-size:1.8rem;">Something went wrong.</div>
+        <div style="font-size:0.88rem;color:var(--text2);max-width:380px;">${escHtml(msg || 'Could not connect to the Q:Sales server. Make sure it\'s running at localhost:3000.')}</div>
+        <button class="btn-retry" onclick="resetDemo()">← Try Again</button>
+      </div>
+    `;
+  }
+
+  // ─── RESET ───────────────────────────────────────────────────────
+  function resetDemo() {
+    closeModal();
+    state = { bizName: '', product: '', leadSources: [], leadVolume: '', dashboardData: null };
+    document.getElementById('biz-name').value = '';
+    document.getElementById('product').value = '';
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected', 'invalid'));
+    document.querySelectorAll('.form-input').forEach(i => i.classList.remove('invalid'));
+
+    // Restore loading screen markup
+    document.getElementById('screen-loading').innerHTML = `
+      <div class="loading-logo"><span>Qore</span><em>OS</em></div>
+      <div class="loading-status" id="loading-status">Initialising Q:Sales...</div>
+      <div class="loading-bar-wrap"><div class="loading-bar" id="loading-bar"></div></div>
+    `;
+
+    showScreen('screen-entry');
+    window.scrollTo(0, 0);
+  }
+
+  // ─── UTILS ───────────────────────────────────────────────────────
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;')
+      .replace(/'/g,'&#39;');
+  }
+
+  function copyText(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy Reply'; }, 2000);
+    });
+  }
+</script>
+</body>
+</html>

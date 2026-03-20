@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const a = require\\(''@anthropic-ai/sdk''\\); console.log\\(typeof a, Object.keys\\(a\\).slice\\(0,5\\)\\)\")",
+      "Bash(node -e \":*)"
+    ]
+  }
+}
